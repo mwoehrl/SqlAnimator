@@ -1,0 +1,18 @@
+Schueler
+nr;name;vorname;klasse
+1;Scott;Abigayle;10c
+2;Meier;Tom;10c
+3;Wöhrl;Maximilian;K12
+
+Noten
+id;schueler_nr;note;typ;fach
+1;1;2;Abfrage;Inf
+2;2;4;Unterrichtsbeitrag;Inf
+3;1;3;Kurzarbeit;Inf
+4;2;1;Kurzarbeit;Inf
+5;3;6;Kurzarbeit;Inf
+
+Buecher
+isbn;titel;zustand;schueler_id
+15422123;Mathe 10;2;2
+12342345;Informatik 5;1;2

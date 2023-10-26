@@ -1,0 +1,5 @@
+set Path=C:\Users\mwoeh\AppData\Local\Programs\Python\Python312\Scripts;%Path%
+
+D:\Projekte\SqlAnimator\src\de\mwoehrl\sqlanimator\query\expression\antlr>
+antlr4-parse Expression.g4 expression -gui
+antlr4 Expression.g4

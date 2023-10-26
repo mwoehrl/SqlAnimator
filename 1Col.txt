@@ -1,0 +1,9 @@
+Schueler
+vorname
+Abigayle
+Tom
+
+Buecher
+titel
+Mathe 10
+Informatik 5
