@@ -65,7 +65,7 @@ public class Relation {
 				int colIndex = 0;
 				while(compResult == 0 && colIndex < orderby.getOrderByColumns().length) {
 					String orderCol = orderby.getOrderByColumns()[colIndex];
-					int inverse = orderby.getAscending()[colIndex] ? 0 : -1;
+					int inverse = orderby.getAscending()[colIndex] ? 1 : -1;
 					int ordinal = colMap.get(orderCol);
 					String leftVal = left.getCell(ordinal).getValue();
 					String rightVal = right.getCell(ordinal).getValue();
