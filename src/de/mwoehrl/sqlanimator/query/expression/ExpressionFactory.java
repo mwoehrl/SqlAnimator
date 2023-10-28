@@ -3,6 +3,7 @@ package de.mwoehrl.sqlanimator.query.expression;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionParser.ColumnContext;
 import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionParser.ExpressionContext;
 import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionParser.LiteralContext;
 
@@ -21,7 +22,7 @@ public class ExpressionFactory {
 			return null;
 		case 1:
 			ParseTree child = expression.getChild(0);
-			if (child instanceof TerminalNode) {
+			if (child instanceof ColumnContext) {
 				//column name
 				return new ColumnExpression(child.getText());
 			} else if (child instanceof LiteralContext){

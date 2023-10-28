@@ -28,7 +28,7 @@ public class MainClass {
 		
 		List<Relation> allRelations = readRelations();
 		
-		Query query = new Query("klasse,vorname,name,note,typ,titel", "Schueler,Noten,Buecher", "schueler_nr=nr", null,null, "note");
+		Query query = new Query("klasse,vorname,name,note,typ", "Schueler,Noten", "schueler_nr=nr AND typ=\"Kurzarbeit\"", null,null, "note");
 		
 		Director director = new Director(query, allRelations, overallWidth- queryWidth, overallHeight);
 
