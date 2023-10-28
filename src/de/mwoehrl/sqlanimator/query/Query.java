@@ -41,6 +41,6 @@ public class Query {
 	
 	@Override
 	public String toString() {
-		return "SELECT " + select.getSelectColumns() + " FROM " + from.getFromTables() + " WHERE " + where.getWhereCondition();
+		return "SELECT " + "<todo>" + " FROM " + from.getFromTables() + " WHERE " + where.getWhereCondition();
 	}
 }

@@ -40,7 +40,7 @@ public class QueryCanvas extends RenderCanvas {
 			e.printStackTrace();
 		}
 		
-		String[] colnames = query.select.getSelectColumns();
+		String[] colnames = query.select.getRawSelects();
 		textCells[0] = new TextCanvas[colnames.length * 2];
 		textCells[0][0] = new TextCanvas("SELECT ", null, "Courier New", Font.BOLD, keywordColor);
 		for (int i = 0; i < colnames.length; i++) {

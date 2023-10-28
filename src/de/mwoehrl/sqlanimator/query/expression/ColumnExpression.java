@@ -16,5 +16,9 @@ public class ColumnExpression extends Expression {
 	public String evaluate(Row targetRow, HashMap<String, Integer> nameToOrdinal) {
 		return targetRow.getCell(nameToOrdinal.get(columnName).intValue()).getValue();
 	}
+	
+	public String getColumnName() {
+		return columnName;
+	}
 
 }

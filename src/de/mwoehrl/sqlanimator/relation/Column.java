@@ -4,10 +4,12 @@ public class Column {
 
 	private final Cell nameCell;
 	private final Cell[] cells;
+	private final String originalTable;
 	
-	public Column(String name, int length) {
+	public Column(String name, int length, String originalTable) {
 		this.nameCell = new Cell(name);
 		cells = new Cell[length];
+		this.originalTable = originalTable;
 	}
 
 	public void setCell(Cell cell, int rowNr) {
@@ -30,6 +32,31 @@ public class Column {
 	public Cell getCell(int r) {
 		return cells[r];
 	}
-	
 
+	public String getOriginalTable() {
+		return originalTable;
+	}
+
+	public Column clone(String newName) {
+		if (newName.equals(getName())) {
+			return this;
+		}
+		Column result = new Column(newName, cells.length, originalTable);
+		for (int i = 0; i < cells.length; i++) {
+			result.cells[i] = cells[i];
+		}
+		return result;
+	}
+	
+	public boolean isNumeric() {
+		boolean result = true;
+		try {
+			for (int i = 0; i < cells.length; i++) {
+				Double.parseDouble(cells[i].getValue());
+			}
+		} catch (NumberFormatException ex) {
+			result = false;
+		}
+		return result;
+	}
 }
