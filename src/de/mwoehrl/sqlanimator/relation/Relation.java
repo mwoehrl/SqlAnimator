@@ -197,7 +197,7 @@ public class Relation {
 		}
 		
 		for (int c = 0; c < columns.length; c++) {
-			columns[c] = new Column(fromRelation.columns[c].getName(), rows.length, fromRelation.columns[c].getOriginalTable());
+			columns[c] = new Column(fromRelation.columns[c].getNameCell(), rows.length, fromRelation.columns[c].getOriginalTable());
 			for (int i = 0; i < fromRelation.rows.length; i++) {
 				columns[c].setCell(fromRelation.rows[i].getCell(c), i);
 			}
@@ -316,6 +316,9 @@ public class Relation {
 				newRow.setCell(rows[r].getCell(i).getClone(), i);
 			}
 			rows[r]=newRow;
+		}
+		for (int i = 0; i < columns.length; i++) {
+			columns[i] = new Column(columns[i].getName(), rows.length, columns[i].getOriginalTable());
 		}
 		for (int i = 0; i < columns.length; i++) {
 			header.setCell(columns[i].getNameCell(), i);

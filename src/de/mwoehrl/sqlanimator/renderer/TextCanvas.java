@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 public class TextCanvas extends RenderCanvas {
 	protected final String fontname;
 	protected static final int hPadding = 2;
+	protected final int padding;
 	protected static final int vPadding = 3;
 	protected Font font;
 	protected int  fontModifiers;
@@ -23,21 +24,26 @@ public class TextCanvas extends RenderCanvas {
 	public TextCanvas(Object text, Color backColor) {
 		this(text, backColor, "Verdana", Font.ITALIC, Color.black);
 	}
-	
+
 	public TextCanvas(Object text, Color backColor, String fontName, int fontModifiers, Color fontColor) {
+		this(text, backColor, fontName, fontModifiers, fontColor, hPadding);
+	}
+	
+	public TextCanvas(Object text, Color backColor, String fontName, int fontModifiers, Color fontColor, int hPadding) {
 		this.text = text;
 		this.backColor = backColor;
 		this.fontname = fontName;
 		this.fontColor = fontColor;
 		this.fontModifiers = fontModifiers;
 		this.font = new Font(fontName, fontModifiers, 12);
+		this.padding = hPadding;
 	}
 	
 	@Override
 	public void calculateRequiredSizes(Graphics g) {
 		g.setFont(font);
 		requiredSize = g.getFontMetrics().getStringBounds(text.toString(),g);
-		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth()+ 2*hPadding, requiredSize.getHeight()+ 2*vPadding);
+		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth()+ padding * 2, requiredSize.getHeight()+ 2*vPadding);
 	}
 
 	@Override
@@ -60,11 +66,10 @@ public class TextCanvas extends RenderCanvas {
 		if (backColor != null) {
 			g.setColor(backColor);
 			g.fillRect(0, 0, width, height);
-		} else {
-			g.setColor(fontColor);
-			Rectangle2D stringbounds = g.getFontMetrics().getStringBounds(text.toString(),g);
-			g.drawString(text.toString(), (int)((width - stringbounds.getWidth())/2), height - (int)((vPadding+1) * scale));
 		}
+		g.setColor(fontColor);
+		g.drawString(text.toString(), padding, height - (int)(vPadding * scale));
+		
 		return img;
 	}
 
@@ -75,8 +80,8 @@ public class TextCanvas extends RenderCanvas {
 		this.scale = factor;
 	}
 
-	public void adjustWidth(double requiredWidth) {
-		requiredSize = new Rectangle2D.Double(0, 0, requiredWidth, requiredSize.getHeight());
+	public void adjustHeight(double h) {
+		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth(), h);
 	}
 
 	@Override

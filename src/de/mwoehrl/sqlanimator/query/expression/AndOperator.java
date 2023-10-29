@@ -1,5 +1,7 @@
 package de.mwoehrl.sqlanimator.query.expression;
 
+import de.mwoehrl.sqlanimator.query.expression.ExpressionToken.TokenType;
+
 public class AndOperator extends Operator {
 
 	@Override
@@ -9,4 +11,9 @@ public class AndOperator extends Operator {
 		}
 		return null;
 	}
+	
+	public ExpressionToken getToken() {
+		return new ExpressionToken(TokenType.Keyword, "AND");
+	}
+
 }

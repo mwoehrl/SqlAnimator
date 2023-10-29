@@ -4,14 +4,10 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import de.mwoehrl.sqlanimator.query.expression.BinaryExpression;
-import de.mwoehrl.sqlanimator.query.expression.ColumnExpression;
-import de.mwoehrl.sqlanimator.query.expression.EqualsOperator;
 import de.mwoehrl.sqlanimator.query.expression.Expression;
 import de.mwoehrl.sqlanimator.query.expression.ExpressionFactory;
 import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionLexer;
 import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionParser;
-import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionParser.ExpressionContext;
 
 public class Query {
 	public final SELECT select;

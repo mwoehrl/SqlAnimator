@@ -129,7 +129,7 @@ public class RelationCanvas extends RenderCanvas {
 		for (int i = 0; i < cells.length; i++) {
 			AbstractCellCanvas c = cells[i][0];
 			result[i] = new AbsoluteCellPosition(
-					(int)(c.position.getX() + position.getX() + c.scale * (c.hPadding - TextCanvas.hPadding)),
+					(int)(c.position.getX() + position.getX() + c.scale * (AbstractCellCanvas.hPadding - TextCanvas.hPadding)),
 					(int)(c.position.getY() + position.getY()),
 					(int)c.requiredSize.getWidth(),
 					(int)c.requiredSize.getHeight(),
@@ -166,7 +166,7 @@ public class RelationCanvas extends RenderCanvas {
 		for (int r = 1; r < cells[0].length; r++) {
 			AbstractCellCanvas c = cells[0][r];
 			result[r - 1] = new AbsoluteCellPosition(
-					(int)(c.position.getX() + position.getX() + c.scale * (c.hPadding - TextCanvas.hPadding))-(int)c.requiredSize.getHeight() * 3 / 4,
+					(int)(c.position.getX() + position.getX() + c.scale * (c.hPadding - TextCanvas.hPadding))-(int)c.requiredSize.getHeight(),
 					(int)(c.position.getY() + position.getY()),
 					(int)c.requiredSize.getWidth(),
 					(int)c.requiredSize.getHeight(),

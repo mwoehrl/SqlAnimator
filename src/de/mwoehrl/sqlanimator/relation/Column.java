@@ -12,6 +12,12 @@ public class Column {
 		this.originalTable = originalTable;
 	}
 
+	public Column(Cell nameCell, int length, String originalTable) {
+		this.nameCell = nameCell;
+		cells = new Cell[length];
+		this.originalTable = originalTable;
+	}
+
 	public void setCell(Cell cell, int rowNr) {
 		cells[rowNr] = cell;
 	}

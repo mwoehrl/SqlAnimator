@@ -2,6 +2,7 @@ package de.mwoehrl.sqlanimator.query.expression;
 
 import java.util.HashMap;
 
+import de.mwoehrl.sqlanimator.query.expression.ExpressionToken.TokenType;
 import de.mwoehrl.sqlanimator.relation.Row;
 
 public class ColumnExpression extends Expression {
@@ -19,6 +20,11 @@ public class ColumnExpression extends Expression {
 	
 	public String getColumnName() {
 		return columnName;
+	}
+
+	@Override
+	public ExpressionToken[] getAllTokens() {
+		return new ExpressionToken[] {new ExpressionToken(TokenType.Column, columnName)};
 	}
 
 }

@@ -11,6 +11,7 @@ public abstract class Operator {
 	protected String booleanToString(boolean b) {
 		return b ? "1" : "0";
 	}
-	
+
+	public abstract ExpressionToken getToken();	
 	
 }

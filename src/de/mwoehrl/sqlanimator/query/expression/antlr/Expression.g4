@@ -19,7 +19,7 @@ literal: INT
 	   ;
 column  : NAME
         | NAME '.' NAME ;
-STRING  : ["].*["] ;
+STRING  : ["].*?["] ;
 INT     : [0-9]+ ;
 AGGREGATE: 'SUM'
          | 'AVG'

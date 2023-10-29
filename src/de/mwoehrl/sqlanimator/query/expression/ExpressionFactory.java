@@ -1,7 +1,6 @@
 package de.mwoehrl.sqlanimator.query.expression;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import de.mwoehrl.sqlanimator.query.Aggregate;
 import de.mwoehrl.sqlanimator.query.AggregateSUM;
@@ -17,16 +16,16 @@ public class ExpressionFactory {
 		case 1:
 			//no aggregate or alias
 			Expression expression = buildExpression(colExpression.getChild(0));
-			return new ProjectionColumn(colExpression.getChild(0).getText(), expression, null);
+			return new ProjectionColumn(colExpression.getChild(0).getText(), expression, null, false);
 		case 3:
 			expression = buildExpression(colExpression.getChild(0));
-			return new ProjectionColumn(colExpression.getChild(2).getText(), expression, null);
+			return new ProjectionColumn(colExpression.getChild(2).getText(), expression, null, true);
 		case 4:   //Aggregate without alias: SUM(expression)
 			expression = buildExpression(colExpression.getChild(2));
-			return new ProjectionColumn(colExpression.getChild(2).getText(), expression, getAggregate(colExpression));
+			return new ProjectionColumn(colExpression.getChild(2).getText(), expression, getAggregate(colExpression), false);
 		case 6:   //Aggregate with alias: SUM(expression) AS name
 			expression = buildExpression(colExpression.getChild(2));
-			return new ProjectionColumn(colExpression.getChild(5).getText(), expression, getAggregate(colExpression));
+			return new ProjectionColumn(colExpression.getChild(5).getText(), expression, getAggregate(colExpression), true);
 		}
 		return null;
 	}

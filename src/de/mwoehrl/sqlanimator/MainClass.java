@@ -20,7 +20,7 @@ public class MainClass {
 	
 	public static void main(String[] args) throws Exception {
 		TransitionCanvas transCanvas;
-		int steps = 64;
+		int steps = 32;
 
 		int overallWidth = 1904;
 		int overallHeight = overallWidth * 9 / 16;
@@ -28,7 +28,7 @@ public class MainClass {
 		
 		List<Relation> allRelations = readRelations();
 		
-		Query query = new Query("note,note,schueler_nr AS sNr,vorname,name,note,typ,note", "Schueler,Noten", "schueler_nr=Schueler.nr", null,null, "vorname");
+		Query query = new Query("vorname,name AS nachname,note,typ", "Schueler,Noten", "nr=schueler_nr", null,null, "nachname");
 		
 		Director director = new Director(query, allRelations, overallWidth- queryWidth, overallHeight);
 
@@ -127,7 +127,6 @@ public class MainClass {
 		}
 		
 		canvasPanel.setRenderCanvas(arcSelected);
-		arcSelected = director.cloneCells(arcSelected);
 		
 		Thread.sleep(steps*40);		
 		
@@ -141,6 +140,7 @@ public class MainClass {
 			canvasPanel.repaint();
 		}
 		
+		arcSelected = director.cloneCells(arcSelected);
 		canvasPanel.setRenderCanvas(arcSelected);
 		Thread.sleep(steps*40);		
 			
