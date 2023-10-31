@@ -20,7 +20,7 @@ public class MainClass {
 	
 	public static void main(String[] args) throws Exception {
 		TransitionCanvas transCanvas;
-		int steps = 32;
+		int steps = 16;
 
 		int overallWidth = 1904;
 		int overallHeight = overallWidth * 9 / 16;
@@ -28,7 +28,7 @@ public class MainClass {
 		
 		List<Relation> allRelations = readRelations();
 		
-		Query query = new Query("vorname,name AS nachname,note,typ", "Schueler,Noten", "nr=schueler_nr", null,null, "nachname");
+		Query query = new Query("SUM(1) AS count,SUM(note),typ", "Noten,Schueler,Buecher", null, "typ", null, null);
 		
 		Director director = new Director(query, allRelations, overallWidth- queryWidth, overallHeight);
 
@@ -104,34 +104,39 @@ public class MainClass {
 			arcMultiRelationCandidate = arcMerged;
 		}
 		
-		director.animateWhereCondition(queryCanvas, arcMultiRelationCandidate);
-		transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas, arcMultiRelationCandidate});
-		canvasPanel.setTransitionCanvas(transCanvas);
-
-		for (int i = 0; i < steps; i++) {
-			Thread.sleep(40);
-			transCanvas.advanceProgress(1d/steps);
-			canvasPanel.repaint();
+		AllRelationCanvas afterPotentialSelection;
+		
+		if (query.where != null) {
+			director.animateWhereCondition(queryCanvas, arcMultiRelationCandidate);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas, arcMultiRelationCandidate});
+			canvasPanel.setTransitionCanvas(transCanvas);
+	
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			Thread.sleep(steps*100);		
+			canvasPanel.setRenderCanvas(arcMultiRelationCandidate);
+			
+			AllRelationCanvas arcSelected = director.executeSelectionStep(arcMultiRelationCandidate);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
+			canvasPanel.setTransitionCanvas(transCanvas);
+	
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			canvasPanel.setRenderCanvas(arcSelected);
+			Thread.sleep(steps*40);		
+			afterPotentialSelection = arcSelected;
+		} else {
+			afterPotentialSelection = arcMultiRelationCandidate;
 		}
-		Thread.sleep(steps*100);		
-		canvasPanel.setRenderCanvas(arcMultiRelationCandidate);
-		
-		AllRelationCanvas arcSelected = director.executeSelectionStep(arcMultiRelationCandidate);
-		transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
-		canvasPanel.setTransitionCanvas(transCanvas);
 
-		for (int i = 0; i < steps; i++) {
-			Thread.sleep(40);
-			transCanvas.advanceProgress(1d/steps);
-			canvasPanel.repaint();
-		}
-		
-		canvasPanel.setRenderCanvas(arcSelected);
-		
-		Thread.sleep(steps*40);		
-		
-		director.animateColumnNames(queryCanvas, arcSelected);
-		transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas, arcSelected});
+		director.animateColumnNames(queryCanvas, afterPotentialSelection);
+		transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas, afterPotentialSelection});
 		canvasPanel.setTransitionCanvas(transCanvas);
 	
 		for (int i = 0; i < steps; i++) {
@@ -140,11 +145,12 @@ public class MainClass {
 			canvasPanel.repaint();
 		}
 		
-		arcSelected = director.cloneCells(arcSelected);
-		canvasPanel.setRenderCanvas(arcSelected);
+		afterPotentialSelection = director.cloneCells(afterPotentialSelection);
+		canvasPanel.setRenderCanvas(afterPotentialSelection);
 		Thread.sleep(steps*40);		
-			
-		AllRelationCanvas arcProjected = director.executeProjectionStep(arcSelected);
+
+		
+		AllRelationCanvas arcProjected = director.executeProjectionStep(afterPotentialSelection);
 		transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
 		canvasPanel.setTransitionCanvas(transCanvas);
 		for (int i = 0; i < steps; i++) {
@@ -156,17 +162,49 @@ public class MainClass {
 		
 		Thread.sleep(steps*40);		
 		arcProjected = director.cloneCells(arcProjected);
-		
-		AllRelationCanvas arcSorted = director.executeOrderByStep(arcProjected);
-		transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
-		canvasPanel.setTransitionCanvas(transCanvas);
-		for (int i = 0; i < steps; i++) {
-			Thread.sleep(40);
-			transCanvas.advanceProgress(1d/steps);
-			canvasPanel.repaint();
-		}
-		canvasPanel.setRenderCanvas(arcSorted);
 
+		AllRelationCanvas arcPotentiallyGrouped;
+		if (query.groupby != null) {
+
+			AllRelationCanvas arcPreGrouped = director.prepareGroupByStep(arcProjected);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
+			canvasPanel.setTransitionCanvas(transCanvas);
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			canvasPanel.setRenderCanvas(arcPreGrouped);
+			Thread.sleep(steps*40);		
+
+			AllRelationCanvas arcGrouped = director.finishGroupByStep(arcPreGrouped);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
+			canvasPanel.setTransitionCanvas(transCanvas);
+			steps = 128;
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			canvasPanel.setRenderCanvas(arcGrouped);
+
+			
+			arcPotentiallyGrouped = arcGrouped;
+		} else {
+			arcPotentiallyGrouped = arcProjected;
+		}
+		
+		if (query.orderby != null) {
+			AllRelationCanvas arcSorted = director.executeOrderByStep(arcPotentiallyGrouped);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
+			canvasPanel.setTransitionCanvas(transCanvas);
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			canvasPanel.setRenderCanvas(arcSorted);
+		}
 	}
 
 	private static List<Relation> readRelations() {

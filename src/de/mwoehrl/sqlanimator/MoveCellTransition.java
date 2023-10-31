@@ -10,16 +10,16 @@ import de.mwoehrl.sqlanimator.renderer.AbsoluteCellPosition;
 public class MoveCellTransition extends CellTransition{
 	private final AbsoluteCellPosition startPos;
 	private final AbsoluteCellPosition endPos;
-	private final Image img;	
+	private Image img;	
+	private boolean imgIsStart;
+	private final boolean alwaysSource;
 	
 	public MoveCellTransition(AbsoluteCellPosition startPos, AbsoluteCellPosition endPos, boolean alwaysSource) {
 		this.endPos=endPos;
 		this.startPos=startPos;
-		if (!alwaysSource && (endPos.getH() > startPos.getH())) {
-			img = endPos.getCellCanvas().drawImage();
-		} else {
-			img = startPos.getCellCanvas().drawImage();
-		}
+		img = startPos.getCellCanvas().drawImage();
+		imgIsStart = true;
+		this.alwaysSource = alwaysSource;
 	}
 
 	
@@ -30,7 +30,12 @@ public class MoveCellTransition extends CellTransition{
 	@Override
 	public void drawCellInTransition(Graphics g, double progress) {
 		progress = (1d - Math.cos(progress * Math.PI))/2;	//Runde Bewegung!
-		//progress = (Math.sin((progress-0.3)*6)+(progress-0.3)*3.5)*0.28+0.56;//Bounce
+
+		if (imgIsStart && !alwaysSource && progress > 0.5d ) {
+			img = endPos.getCellCanvas().drawImage();
+			imgIsStart = false;
+		}		
+		
 		int x = (int)(startPos.getX() + ((endPos.getX() - startPos.getX()) * progress));
 		int y = (int)(startPos.getY() + ((endPos.getY() - startPos.getY()) * progress));
 		int w = (int)(startPos.getW() + ((endPos.getW() - startPos.getW()) * progress));

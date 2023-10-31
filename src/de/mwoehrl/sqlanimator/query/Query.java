@@ -14,6 +14,7 @@ public class Query {
 	public final FROM from;
 	public final WHERE where;
 	public final ORDERBY orderby;
+	public final GROUPBY groupby;
 	
 	public Query(String selectFields, String fromTables, String whereCondition, String groupBy, String having, String orderBy) {
 		select = new SELECT(selectFields);
@@ -23,7 +24,16 @@ public class Query {
 		} else {
 			where = new WHERE(parseCondition(whereCondition), whereCondition);
 		}
-		orderby = new ORDERBY(orderBy);
+		if (groupBy != null) {
+			groupby = new GROUPBY(groupBy);
+		} else {
+			groupby = null;
+		}
+		if (orderBy != null) {
+			orderby = new ORDERBY(orderBy);
+		} else {
+			orderby = null;
+		}
 	}
 	
 	private Expression parseCondition(String condition) {

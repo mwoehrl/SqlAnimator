@@ -5,6 +5,7 @@ public class Column {
 	private final Cell nameCell;
 	private final Cell[] cells;
 	private final String originalTable;
+	private Boolean isNumeric = null;
 	
 	public Column(String name, int length, String originalTable) {
 		this.nameCell = new Cell(name);
@@ -55,14 +56,17 @@ public class Column {
 	}
 	
 	public boolean isNumeric() {
-		boolean result = true;
-		try {
-			for (int i = 0; i < cells.length; i++) {
-				Double.parseDouble(cells[i].getValue());
+		if (isNumeric == null) {
+			boolean result = true;
+			try {
+				for (int i = 0; i < cells.length; i++) {
+					Double.parseDouble(cells[i].getValue());
+				}
+			} catch (NumberFormatException ex) {
+				result = false;
 			}
-		} catch (NumberFormatException ex) {
-			result = false;
+			isNumeric = result;
 		}
-		return result;
+		return isNumeric;
 	}
 }

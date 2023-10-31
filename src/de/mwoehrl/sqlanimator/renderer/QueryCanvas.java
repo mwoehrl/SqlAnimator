@@ -35,7 +35,7 @@ public class QueryCanvas extends RenderCanvas {
 	public QueryCanvas(Query query, int targetWidth, int targetHeight) {
 		this.targetWidth = targetWidth;
 		this.targetHeight = targetHeight;
-		this.textCells = new TextCanvas[6][];
+		this.textCells = new TextCanvas[4 + (query.where==null ? 0 : 1) + (query.orderby==null ? 0 : 1)][];
 		this.query = query;
 
 		try {
@@ -70,26 +70,35 @@ public class QueryCanvas extends RenderCanvas {
 				textCells[1][i * 2 + 2] = new TextCanvas(",", null);
 		}
 
-		// Expression whereExpr = query.where.getWhereCondition();
-		textCells[2] = new TextCanvas[2];
-		textCells[2][0] = new TextCanvas("WHERE ", null, "Courier New", Font.BOLD, keywordColor);
-		for (int i = 0; i < 1; i++) {
-			textCells[2][i + 1] = new TextCanvas(query.where.getConditionString(), null);
+		int queryRow = 2;
+		if (query.where != null) {
+			// Expression whereExpr = query.where.getWhereCondition();
+			textCells[queryRow] = new TextCanvas[2];
+			textCells[queryRow][0] = new TextCanvas("WHERE ", null, "Courier New", Font.BOLD, keywordColor);
+			for (int i = 0; i < 1; i++) {
+				textCells[queryRow][i + 1] = new TextCanvas(query.where.getConditionString(), null);
+			}
+			queryRow++;
 		}
-		textCells[3] = new TextCanvas[2];
-		textCells[3][0] = new TextCanvas("GROUP BY ", null, "Courier New", Font.BOLD, keywordColor);
+		textCells[queryRow] = new TextCanvas[2];
+		textCells[queryRow][0] = new TextCanvas("GROUP BY ", null, "Courier New", Font.BOLD, keywordColor);
 		for (int i = 0; i < 1; i++) {
-			textCells[3][i + 1] = new TextCanvas("<ToDo>", null);
+			textCells[queryRow][i + 1] = new TextCanvas(query.groupby, null, "Verdana", 0, Color.black);
 		}
-		textCells[4] = new TextCanvas[2];
-		textCells[4][0] = new TextCanvas("HAVING ", null, "Courier New", Font.BOLD, keywordColor);
+		queryRow++;
+		textCells[queryRow] = new TextCanvas[2];
+		textCells[queryRow][0] = new TextCanvas("HAVING ", null, "Courier New", Font.BOLD, keywordColor);
 		for (int i = 0; i < 1; i++) {
-			textCells[4][i + 1] = new TextCanvas("<ToDo>", null);
+			textCells[queryRow][i + 1] = new TextCanvas("<ToDo>", null);
 		}
-		textCells[5] = new TextCanvas[2];
-		textCells[5][0] = new TextCanvas("ORDER BY ", null, "Courier New", Font.BOLD, keywordColor);
-		for (int i = 0; i < 1; i++) {
-			textCells[5][i + 1] = new TextCanvas(String.join(",", query.orderby.getOrderByColumns()), null);
+		queryRow++;
+		
+		if (query.orderby != null) {
+			textCells[queryRow] = new TextCanvas[2];
+			textCells[queryRow][0] = new TextCanvas("ORDER BY ", null, "Courier New", Font.BOLD, keywordColor);
+			for (int i = 0; i < 1; i++) {
+				textCells[queryRow][i + 1] = new TextCanvas(String.join(",", query.orderby.getOrderByColumns()), null);
+			}
 		}
 		renderRelations();
 	}

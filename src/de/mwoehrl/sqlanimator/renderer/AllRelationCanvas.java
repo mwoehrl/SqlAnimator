@@ -5,8 +5,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import de.mwoehrl.sqlanimator.relation.Relation;
+import de.mwoehrl.sqlanimator.relation.Row;
 
 public class AllRelationCanvas extends RenderCanvas {
 	private static final int padding = 10;
@@ -23,13 +25,21 @@ public class AllRelationCanvas extends RenderCanvas {
 		relations = allRelations;
 		targetWidth = w;
 		targetHeight = h;
-		renderRelations();
+		renderRelations(null);
 	}
 
-	private void renderRelations() {
+	public AllRelationCanvas(Relation relation, int w, int h,
+			ArrayList<ArrayList<Row>> bucketList) {
+		relations = new Relation[] {relation};
+		targetWidth = w;
+		targetHeight = h;
+		renderRelations(bucketList);
+	}
+
+	private void renderRelations(ArrayList<ArrayList<Row>> bucketList) {
 		relationCanvases = new RelationCanvas[relations.length];
 		for (int i = 0; i < relations.length; i++) {
-			relationCanvases[i] = new RelationCanvas(relations[i]);
+			relationCanvases[i] = new RelationCanvas(relations[i], bucketList);
 		}
 		BufferedImage img = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB);
 		calculateRequiredSizes(img.getGraphics());

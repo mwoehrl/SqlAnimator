@@ -8,6 +8,7 @@ public class ORDERBY {
 	public ORDERBY(String orderByColumns) {
 		this.orderByColumns = orderByColumns.split(",");
 		this.ascending = new boolean[this.orderByColumns.length];
+		//TODO: ASC / DESC auslesen!
 		for (int i = 0; i < ascending.length; i++) {
 			ascending[i]=true;
 		}

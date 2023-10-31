@@ -20,6 +20,15 @@ public class Cell {
 	public Cell getClone() {
 		return new Cell(value);
 	}
+
+	public double getNumericValue() {
+		try {
+			return Double.parseDouble(value);
+		} catch (NumberFormatException ex) {
+			
+		}
+		return 0d;
+	}
 	
 
 }

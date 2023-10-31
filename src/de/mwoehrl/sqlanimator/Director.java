@@ -7,6 +7,7 @@ import de.mwoehrl.sqlanimator.query.Query;
 import de.mwoehrl.sqlanimator.query.SELECT;
 import de.mwoehrl.sqlanimator.relation.Cell;
 import de.mwoehrl.sqlanimator.relation.Relation;
+import de.mwoehrl.sqlanimator.relation.Row;
 import de.mwoehrl.sqlanimator.renderer.AbsoluteCellPosition;
 import de.mwoehrl.sqlanimator.renderer.AllRelationCanvas;
 import de.mwoehrl.sqlanimator.renderer.QueryCanvas;
@@ -20,6 +21,7 @@ public class Director {
 	
 	
 	public CellTransition[] transitions;
+	private ArrayList<ArrayList<Row>> bucketList;
 	
 	public Director(Query query, List<Relation> originalRelations,int screenWidth,int screenHeight) {
 		this.screenHeight = screenHeight;
@@ -107,6 +109,28 @@ public class Director {
 		return newARC;
 	}
 
+	public AllRelationCanvas prepareGroupByStep(AllRelationCanvas prevARC) throws Exception {
+		bucketList = new ArrayList<ArrayList<Row>>();
+		Relation preGroupedRelation = prevARC.getRelations()[0].prepareGroupBy(query.groupby, bucketList);
+		
+		AllRelationCanvas newARC = new AllRelationCanvas(preGroupedRelation, screenWidth, screenHeight, bucketList);
+		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
+		transitions = matchTransitions(fromPositions, toCellsDest);
+		return newARC;
+	}
+
+	public AllRelationCanvas finishGroupByStep(AllRelationCanvas prevARC) throws Exception {
+		Relation preGroupedRelation = prevARC.getRelations()[0].finishGroupBy(query.select, bucketList);
+		
+		AllRelationCanvas newARC = new AllRelationCanvas(new Relation[] {preGroupedRelation}, screenWidth, screenHeight);
+		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
+		transitions = matchTransitions(fromPositions, toCellsDest);
+		return newARC;
+	}
 		
 	private CellTransition[] matchTransitions(AbsoluteCellPosition[] src, AbsoluteCellPosition[] dest) {
 		ArrayList<CellTransition> result = new ArrayList<CellTransition>(); 

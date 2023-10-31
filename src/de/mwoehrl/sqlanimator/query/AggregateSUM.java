@@ -3,11 +3,20 @@ package de.mwoehrl.sqlanimator.query;
 public class AggregateSUM extends Aggregate {
 
 	@Override
-	public String doAggregation(String[] cellValues) {
-		int sum = 0;
-		for (String s : cellValues) {
-			sum += Integer.parseInt(s);
+	public String doAggregation(double[] cellValues) {
+		double sum = 0d;
+		for (double d : cellValues) {
+			sum += d;
 		}
-		return String.valueOf(sum);
+		if (sum == (double)((int)sum)) {
+			return String.valueOf((int)sum);
+		} else {
+			return String.valueOf(sum);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "SUM";
 	}
 }

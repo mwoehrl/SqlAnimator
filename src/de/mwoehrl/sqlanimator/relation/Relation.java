@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import de.mwoehrl.sqlanimator.query.GROUPBY;
 import de.mwoehrl.sqlanimator.query.ORDERBY;
 import de.mwoehrl.sqlanimator.query.ProjectionColumn;
 import de.mwoehrl.sqlanimator.query.SELECT;
@@ -35,8 +36,8 @@ public class Relation {
 				int ordinal = colMap.get(orderCol);
 
 				if (cols[ordinal].isNumeric()) {
-					Double leftVal = Double.parseDouble(left.getCell(ordinal).getValue());
-					Double rightVal = Double.parseDouble(right.getCell(ordinal).getValue());
+					Double leftVal = left.getCell(ordinal).getNumericValue();
+					Double rightVal = right.getCell(ordinal).getNumericValue();
 					compResult = leftVal.compareTo(rightVal) * inverse;
 				} else {
 					String leftVal = left.getCell(ordinal).getValue();
@@ -102,6 +103,75 @@ public class Relation {
 		for (int i = 0; i < columns.length; i++) {
 			for (int r = 0; r < rows.length; r++) {
 				columns[i] = new Column(fromRelation.getColumns()[i].getName(), rows.length, fromRelation.getColumns()[i].getOriginalTable());
+				columns[i].setCell(rows[r].getCell(i), r);
+			}
+		}
+	}
+	
+	private Relation (Relation fromRelation, GROUPBY groupby, ArrayList<ArrayList<Row>> bucketList) {		//Prepare for Grouping: Bucket-Sort by groupBy columns
+		name = fromRelation.name; 
+		columns = new Column[fromRelation.columns.length];
+		header = fromRelation.header;
+		rows = new Row[fromRelation.rows.length];
+
+		TypeSensitiveComparator comp = new TypeSensitiveComparator(getNameToOrdinalMapping(fromRelation), groupby.convertToORDERBY(), fromRelation.columns);
+		for (int i = 0; i < rows.length; i++) {
+			boolean found = false;
+			for (int j = 0; j < bucketList.size(); j++) {
+				if (comp.compare(fromRelation.rows[i], bucketList.get(j).get(0))==0) {
+					bucketList.get(j).add(fromRelation.rows[i]);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				ArrayList<Row> newBucket = new ArrayList<Row>();
+				newBucket.add(fromRelation.rows[i]);
+				bucketList.add(newBucket);
+			}
+		}
+		
+		int index = 0;
+		for (int i = 0; i < bucketList.size(); i++) {
+			for (int j = 0; j < bucketList.get(i).size(); j++) {
+				rows[index++] = bucketList.get(i).get(j);
+			}		
+		}
+		
+		for (int i = 0; i < columns.length; i++) {
+			columns[i] = new Column(fromRelation.getColumns()[i].getName(), rows.length, fromRelation.getColumns()[i].getOriginalTable());
+			for (int r = 0; r < rows.length; r++) {
+				columns[i].setCell(rows[r].getCell(i), r);
+			}
+		}
+	}
+	
+	private Relation (Relation fromRelation, SELECT selectFields, ArrayList<ArrayList<Row>> bucketList) {		//Execute Grouping: make groups into one row
+		name = fromRelation.name; 
+		columns = new Column[fromRelation.columns.length];
+		header = fromRelation.header;
+		rows = new Row[bucketList.size()];
+
+		int rowIndex = 0;
+		for (int b = 0; b < bucketList.size(); b++) {
+			rows[b] = new Row(selectFields.getProjectionColumns().length);
+			for (int c = 0; c < selectFields.getProjectionColumns().length; c++) {
+				if (selectFields.getProjectionColumns()[c].aggregate == null) {
+					rows[b].setCell(fromRelation.rows[rowIndex + (bucketList.get(b).size()-1) / 2].getCell(c), c);;
+				} else {
+					double[] aggregateValues = new double[bucketList.get(b).size()];
+					for (int i = 0; i < bucketList.get(b).size(); i++) {
+						aggregateValues[i] = fromRelation.rows[rowIndex + i].getCell(c).getNumericValue();
+					}
+					rows[b].setCell(new Cell(selectFields.getProjectionColumns()[c].aggregate.doAggregation(aggregateValues)), c);
+				}
+			}
+			rowIndex += bucketList.get(b).size();
+		}		
+		
+		for (int i = 0; i < columns.length; i++) {
+			columns[i] = new Column(fromRelation.getColumns()[i].getName(), rows.length, fromRelation.getColumns()[i].getOriginalTable());
+			for (int r = 0; r < rows.length; r++) {
 				columns[i].setCell(rows[r].getCell(i), r);
 			}
 		}
@@ -344,4 +414,12 @@ public class Relation {
 		String evalResult = condition.getWhereCondition().evaluate(rows[rowIndex], getNameToOrdinalMapping(this));
 		return (evalResult != null && !evalResult.equals("0")); 
 	}
+
+	public Relation prepareGroupBy(GROUPBY groupby, ArrayList<ArrayList<Row>> bucketList) {
+		return new Relation(this, groupby, bucketList);
+	}
+
+	public Relation finishGroupBy(SELECT select, ArrayList<ArrayList<Row>> bucketList) {
+		return new Relation(this, select, bucketList);
+	}	
 }

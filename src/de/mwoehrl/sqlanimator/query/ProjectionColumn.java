@@ -23,8 +23,14 @@ public class ProjectionColumn {
 		ExpressionToken[] inner = columnExpression.getAllTokens();
 		
 		if (aggregate != null) {
-
-
+			ExpressionToken[] aggregateTokens = new ExpressionToken[inner.length + 3]; 
+			for (int i = 0; i < inner.length; i++) {
+				aggregateTokens[i+2] = inner[i];
+			}
+			aggregateTokens[0] = new ExpressionToken(TokenType.Keyword, aggregate.toString());
+			aggregateTokens[1] = new ExpressionToken(TokenType.Other, "(");
+			aggregateTokens[aggregateTokens.length-1] = new ExpressionToken(TokenType.Other, ")");
+			inner= aggregateTokens;
 		}
 		if (hasAlias) {
 			inner = Arrays.copyOf(inner, inner.length + 2);
