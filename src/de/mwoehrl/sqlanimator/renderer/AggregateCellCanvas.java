@@ -8,16 +8,29 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import de.mwoehrl.sqlanimator.query.Aggregate;
+
 public class AggregateCellCanvas extends AbstractCellCanvas {
 
 	private String text;
+	private final Aggregate aggregate;
+	private double progress = 0;
+	private final double[] agrCellValues;
+	private final int maxAggrCount;
 	
-	protected AggregateCellCanvas(String text) {
+	protected AggregateCellCanvas(String text, Aggregate aggregate, double[] agrCellValues, int maxAggrCount) {
 		super(true, text);
 		this.fontname = "Courier New";
 		this.text = text;
+		this.aggregate = aggregate;
+		this.agrCellValues = agrCellValues;
+		this.maxAggrCount = maxAggrCount;
 	}
 
+	public void setProgress(double p) {
+		progress = p;
+	}
+	
 	@Override
 	public Image drawImage() {
 		int height = 1+(int)requiredSize.getHeight();
@@ -42,7 +55,19 @@ public class AggregateCellCanvas extends AbstractCellCanvas {
 
 		Rectangle2D requiredHeight = g.getFontMetrics().getStringBounds(text, g);
 
-		g.drawString(text, (int)(((width - requiredHeight.getWidth())/2d)), (int) ((height + requiredHeight.getHeight() -  5d * scale) / 2));
+		double progressStep = 1d / (maxAggrCount + 2);
+		if (progress < progressStep) {
+			g.drawString(text, (int)(((width - requiredHeight.getWidth())/2d)), (int) ((height + requiredHeight.getHeight() -  5d * scale) / 2));
+		} else {
+			int stepCount = (int)(progress/progressStep);
+			if (stepCount > agrCellValues.length) stepCount = agrCellValues.length; 
+			double[] lastN = new double[stepCount];
+			for (int i = 0; i < stepCount; i++) {
+				lastN[i] = agrCellValues[agrCellValues.length-i-1];
+			}
+			String aggr = aggregate.doAggregation(lastN);
+			g.drawString(aggr, (int)(((width - requiredHeight.getWidth())/2d)), (int) ((height + requiredHeight.getHeight() -  5d * scale) / 2));
+		}
 		return img;
 	}
 

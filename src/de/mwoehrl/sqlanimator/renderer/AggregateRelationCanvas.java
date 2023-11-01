@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+import de.mwoehrl.sqlanimator.AggregateCellTransition;
 import de.mwoehrl.sqlanimator.CellTransition;
 import de.mwoehrl.sqlanimator.FallingCellTransition;
 import de.mwoehrl.sqlanimator.MoveCellTransition;
@@ -36,6 +37,7 @@ public class AggregateRelationCanvas extends RelationCanvas {
 		tp.end = tp.start ;
 		transitions.add(tp);
 		aggregateOrdinals = new int[aggregates.length];
+		int maxArgCount = 0;
 		for (int c = 0; c < aggregates.length; c++) {
 			tp = new TransitionPair();	//Header transition onto itself
 			tp.start = cells[c][0];
@@ -69,7 +71,8 @@ public class AggregateRelationCanvas extends RelationCanvas {
 						transitions.add(tp);
 					}	
 					r += bucketList.get(b).size();
-					if (h > fallingDepth) fallingDepth = h; 
+					if (h > fallingDepth) fallingDepth = h;
+					if (bucketList.get(b).size() >  maxArgCount) maxArgCount = bucketList.get(b).size(); 
 				}
 			}
 		}
@@ -84,7 +87,11 @@ public class AggregateRelationCanvas extends RelationCanvas {
 				for (int b = 0; b < bucketList.size(); b++) {
 					AbstractCellCanvas endCell = cells[c][r + bucketList.get(b).size()-1];
 					double y = endCell.position.getY() + endCell.requiredSize.getHeight();
-					aggregateCells[aggregationsCount][b] = new AggregateCellCanvas(aggregates[c].toString());
+					double[] agrCellValues = new double[bucketList.get(b).size()];
+					for (int i = 0; i < bucketList.get(b).size(); i++) {
+						agrCellValues[i] = bucketList.get(b).get(i).getCell(c).getNumericValue();
+					}
+					aggregateCells[aggregationsCount][b] = new AggregateCellCanvas(aggregates[c].toString(), aggregates[c], agrCellValues, maxArgCount);
 					aggregateCells[aggregationsCount][b].setPosition(x, y + aggregateCells[aggregationsCount][b].requiredSize.getHeight() * (1d - scaleFactor) / 4d);
 					aggregateCells[aggregationsCount][b].adjustWidth(w);
 					for (int i = 0; i < bucketList.get(b).size(); i++) {
@@ -141,7 +148,11 @@ public class AggregateRelationCanvas extends RelationCanvas {
 		CellTransition[] result = new CellTransition[transitionPairs.length];
 		for (int i = 0; i < transitionPairs.length; i++) {
 			if (transitionPairs[i].start == transitionPairs[i].end) {	//stay in place
-				result[i] = new MoveCellTransition(getAbsoluteCellPosition(transitionPairs[i].start, parentPosition), getAbsoluteCellPosition(transitionPairs[i].end, parentPosition), true);
+				if (transitionPairs[i].start instanceof AggregateCellCanvas) {
+					result[i] = new AggregateCellTransition(getAbsoluteCellPosition(transitionPairs[i].start, parentPosition));
+				} else {
+					result[i] = new MoveCellTransition(getAbsoluteCellPosition(transitionPairs[i].start, parentPosition), getAbsoluteCellPosition(transitionPairs[i].end, parentPosition), true);
+				}
 			} else {
 				result[i] = new FallingCellTransition(getAbsoluteCellPosition(transitionPairs[i].start, parentPosition), getAbsoluteCellPosition(transitionPairs[i].end, parentPosition), fallingDepth);
 			}

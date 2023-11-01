@@ -20,7 +20,7 @@ public class MainClass {
 	
 	public static void main(String[] args) throws Exception {
 		TransitionCanvas transCanvas;
-		int steps = 32;
+		int steps = 16;
 
 		int overallWidth = 1904;
 		int overallHeight = overallWidth * 9 / 16;
@@ -148,7 +148,6 @@ public class MainClass {
 		afterPotentialSelection = director.cloneCells(afterPotentialSelection);
 		canvasPanel.setRenderCanvas(afterPotentialSelection);
 		Thread.sleep(steps*40);		
-
 		
 		AllRelationCanvas arcProjected = director.executeProjectionStep(afterPotentialSelection);
 		transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
@@ -177,7 +176,6 @@ public class MainClass {
 			canvasPanel.setRenderCanvas(arcPreGrouped);
 			Thread.sleep(steps*40);		
 
-			
 			AllRelationCanvas arcPreAggregated = director.prepareAggregationStep(arcPreGrouped);
 			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
 			canvasPanel.setTransitionCanvas(transCanvas);
@@ -202,7 +200,6 @@ public class MainClass {
 			AllRelationCanvas arcGrouped = director.finishGroupByStep(arcPreAggregated);
 			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
 			canvasPanel.setTransitionCanvas(transCanvas);
-			Thread.sleep(steps*40);		
 			
 			for (int i = 0; i < steps; i++) {
 				Thread.sleep(40);
@@ -210,6 +207,7 @@ public class MainClass {
 				canvasPanel.repaint();
 			}
 			canvasPanel.setRenderCanvas(arcGrouped);
+			Thread.sleep(steps*40);		
 
 			
 			arcPotentiallyGrouped = arcGrouped;
