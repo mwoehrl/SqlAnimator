@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import de.mwoehrl.sqlanimator.query.Aggregate;
 import de.mwoehrl.sqlanimator.query.AggregateAVG;
+import de.mwoehrl.sqlanimator.query.AggregateCOUNT;
 import de.mwoehrl.sqlanimator.query.AggregateSUM;
 import de.mwoehrl.sqlanimator.query.ProjectionColumn;
 import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionParser.ColumnContext;
@@ -38,6 +39,8 @@ public class ExpressionFactory {
 			return new AggregateSUM();
 		case "AVG":
 			return new AggregateAVG();
+		case "COUNT":
+			return new AggregateCOUNT();
 		}
 		return null;
 	}
@@ -75,6 +78,10 @@ public class ExpressionFactory {
 		switch (operator.getText()) {
 		case "=":
 			return new EqualsOperator();
+		case "<":
+			return new SmallerOperator();
+		case ">":
+			return new GreaterOperator();
 		case "+":
 			return new AddOperator();
 		case "AND":

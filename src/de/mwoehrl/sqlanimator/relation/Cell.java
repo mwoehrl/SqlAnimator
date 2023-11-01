@@ -22,6 +22,7 @@ public class Cell {
 	}
 
 	public double getNumericValue() {
+		if (value == null) return Double.NaN;
 		try {
 			return Double.parseDouble(value);
 		} catch (NumberFormatException ex) {

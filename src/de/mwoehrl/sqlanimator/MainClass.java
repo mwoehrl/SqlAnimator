@@ -20,7 +20,7 @@ public class MainClass {
 	
 	public static void main(String[] args) throws Exception {
 		TransitionCanvas transCanvas;
-		int steps = 16;
+		int steps = 20;
 
 		int overallWidth = 1904;
 		int overallHeight = overallWidth * 9 / 16;
@@ -28,7 +28,7 @@ public class MainClass {
 		
 		List<Relation> allRelations = readRelations();
 		
-		Query query = new Query("vorname,name AS nachname,AVG(note),SUM(1) AS anzahl", "Schueler,Noten", "nr=schueler_nr", "nachname,vorname", null, "nachname");
+		Query query = new Query("vorname,name AS nachname,AVG(note),COUNT(note) AS anzahl", "Schueler,Noten", "schueler_nr=nr", "nachname,vorname", "anzahl<3", "vorname");
 		
 		Director director = new Director(query, allRelations, overallWidth- queryWidth, overallHeight);
 
@@ -107,7 +107,7 @@ public class MainClass {
 		AllRelationCanvas afterPotentialSelection;
 		
 		if (query.where != null) {
-			director.animateWhereCondition(queryCanvas, arcMultiRelationCandidate);
+			director.animateWhereCondition(queryCanvas, arcMultiRelationCandidate, true);
 			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas, arcMultiRelationCandidate});
 			canvasPanel.setTransitionCanvas(transCanvas);
 	
@@ -119,7 +119,7 @@ public class MainClass {
 			Thread.sleep(steps*100);		
 			canvasPanel.setRenderCanvas(arcMultiRelationCandidate);
 			
-			AllRelationCanvas arcSelected = director.executeSelectionStep(arcMultiRelationCandidate);
+			AllRelationCanvas arcSelected = director.executeSelectionStep(arcMultiRelationCandidate, true);
 			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
 			canvasPanel.setTransitionCanvas(transCanvas);
 	
@@ -215,8 +215,39 @@ public class MainClass {
 			arcPotentiallyGrouped = arcProjected;
 		}
 		
+		AllRelationCanvas afterPotentialHaving;
+		
+		if (query.having != null) {
+			director.animateWhereCondition(queryCanvas, arcPotentiallyGrouped, false);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas, arcPotentiallyGrouped});
+			canvasPanel.setTransitionCanvas(transCanvas);
+	
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			Thread.sleep(steps*100);		
+			canvasPanel.setRenderCanvas(arcPotentiallyGrouped);
+			
+			AllRelationCanvas arcSelected = director.executeSelectionStep(arcPotentiallyGrouped, false);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
+			canvasPanel.setTransitionCanvas(transCanvas);
+	
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			canvasPanel.setRenderCanvas(arcSelected);
+			Thread.sleep(steps*40);		
+			afterPotentialHaving = arcSelected;
+		} else {
+			afterPotentialHaving = arcPotentiallyGrouped;
+		}
+		
 		if (query.orderby != null) {
-			AllRelationCanvas arcSorted = director.executeOrderByStep(arcPotentiallyGrouped);
+			AllRelationCanvas arcSorted = director.executeOrderByStep(afterPotentialHaving);
 			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
 			canvasPanel.setTransitionCanvas(transCanvas);
 			for (int i = 0; i < steps; i++) {

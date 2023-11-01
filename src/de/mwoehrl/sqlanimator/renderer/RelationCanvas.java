@@ -202,7 +202,7 @@ public class RelationCanvas extends RenderCanvas {
 			result[r - 1] = new AbsoluteCellPosition(
 					c.position.getX() + position.getX() + c.scale * (AbstractCellCanvas.hPadding - TextCanvas.hPadding)-c.requiredSize.getHeight(),
 					c.position.getY() + position.getY(),
-					c.requiredSize.getWidth(),
+					c.requiredSize.getHeight(),
 					c.requiredSize.getHeight(),
 					c); 
 		}

@@ -6,7 +6,7 @@ public class AddOperator extends Operator {
 
 	@Override
 	public String evaluate(String left, String right) {
-		return String.valueOf(Integer.parseInt(left) + Integer.parseInt(right));
+		return String.valueOf(Double.parseDouble(left) + Double.parseDouble(right));
 	}
 
 	public ExpressionToken getToken() {

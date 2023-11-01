@@ -31,11 +31,12 @@ public class QueryCanvas extends RenderCanvas {
 	private BufferedImage tick;
 	private BufferedImage cross;
 	private final Query query;
+	private int havingLine;
 
 	public QueryCanvas(Query query, int targetWidth, int targetHeight) {
 		this.targetWidth = targetWidth;
 		this.targetHeight = targetHeight;
-		this.textCells = new TextCanvas[4 + (query.where==null ? 0 : 1) + (query.orderby==null ? 0 : 1)][];
+		this.textCells = new TextCanvas[2 + (query.where==null ? 0 : 1) + (query.orderby==null ? 0 : 1) + (query.groupby==null ? 0 : 1) + (query.having==null ? 0 : 1)][];
 		this.query = query;
 
 		try {
@@ -72,7 +73,6 @@ public class QueryCanvas extends RenderCanvas {
 
 		int queryRow = 2;
 		if (query.where != null) {
-			// Expression whereExpr = query.where.getWhereCondition();
 			textCells[queryRow] = new TextCanvas[2];
 			textCells[queryRow][0] = new TextCanvas("WHERE ", null, "Courier New", Font.BOLD, keywordColor);
 			for (int i = 0; i < 1; i++) {
@@ -80,18 +80,25 @@ public class QueryCanvas extends RenderCanvas {
 			}
 			queryRow++;
 		}
-		textCells[queryRow] = new TextCanvas[2];
-		textCells[queryRow][0] = new TextCanvas("GROUP BY ", null, "Courier New", Font.BOLD, keywordColor);
-		for (int i = 0; i < 1; i++) {
-			textCells[queryRow][i + 1] = new TextCanvas(query.groupby, null, "Verdana", 0, Color.black);
+
+		if (query.groupby != null) {
+			textCells[queryRow] = new TextCanvas[2];
+			textCells[queryRow][0] = new TextCanvas("GROUP BY ", null, "Courier New", Font.BOLD, keywordColor);
+			for (int i = 0; i < 1; i++) {
+				textCells[queryRow][i + 1] = new TextCanvas(query.groupby, null, "Verdana", 0, Color.black);
+			}
+			queryRow++;
 		}
-		queryRow++;
-		textCells[queryRow] = new TextCanvas[2];
-		textCells[queryRow][0] = new TextCanvas("HAVING ", null, "Courier New", Font.BOLD, keywordColor);
-		for (int i = 0; i < 1; i++) {
-			textCells[queryRow][i + 1] = new TextCanvas("<ToDo>", null);
+		
+		if (query.having != null) {
+			textCells[queryRow] = new TextCanvas[2];
+			textCells[queryRow][0] = new TextCanvas("HAVING ", null, "Courier New", Font.BOLD, keywordColor);
+			for (int i = 0; i < 1; i++) {
+				textCells[queryRow][i + 1] = new TextCanvas(query.having.getConditionString(), null);
+			}
+			havingLine = queryRow;
+			queryRow++;
 		}
-		queryRow++;
 		
 		if (query.orderby != null) {
 			textCells[queryRow] = new TextCanvas[2];
@@ -222,12 +229,12 @@ public class QueryCanvas extends RenderCanvas {
 		return result;
 	}
 
-	public AbsoluteCellPosition[] getWhereTicks(int length, Relation relation) {
+	public AbsoluteCellPosition[] getWhereTicks(int length, Relation relation, boolean where) {
 		AbsoluteCellPosition[] result = new AbsoluteCellPosition[length];
-		TextCanvas c = textCells[2][1];
+		TextCanvas c = textCells[where ? 2 : havingLine][1];
 		for (int r = 0; r < length; r++) {
 			ImageCanvas imageCanvas = new ImageCanvas();
-			imageCanvas.setImage(relation.rowMatchesCondition(query.where, r) ? tick : cross);
+			imageCanvas.setImage(relation.rowMatchesCondition(where ? query.where : query.having, r) ? tick : cross);
 			result[r] = new AbsoluteCellPosition(
 					c.position.getX() + position.getX(),
 					c.position.getY() + position.getY(),

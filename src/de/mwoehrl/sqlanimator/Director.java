@@ -89,8 +89,8 @@ public class Director {
 
 	}
 
-	public AllRelationCanvas executeSelectionStep(AllRelationCanvas prevARC) throws Exception {
-		Relation selectedRelations = prevARC.getRelations()[0].selection(query.where);
+	public AllRelationCanvas executeSelectionStep(AllRelationCanvas prevARC, boolean where) throws Exception {
+		Relation selectedRelations = prevARC.getRelations()[0].selection(where ? query.where : query.having);
 		AllRelationCanvas newARC = new AllRelationCanvas(new Relation[] {selectedRelations}, screenWidth, screenHeight);
 		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
@@ -263,9 +263,9 @@ public class Director {
 		result.toArray(transitions);
 	}
 	
-	public void animateWhereCondition(QueryCanvas queryCanvas, AllRelationCanvas arc) {
+	public void animateWhereCondition(QueryCanvas queryCanvas, AllRelationCanvas arc, boolean where) {
 		AbsoluteCellPosition[] tableCells = arc.getFirstColumnCellPositions();
-		AbsoluteCellPosition[] queryCells = queryCanvas.getWhereTicks(tableCells.length, arc.getRelations()[0]);
+		AbsoluteCellPosition[] queryCells = queryCanvas.getWhereTicks(tableCells.length, arc.getRelations()[0], where);
 
 		ArrayList<CellTransition> result = new ArrayList<>();
 			for (int j = 0; j < tableCells.length; j++) {
@@ -273,9 +273,6 @@ public class Director {
 			}
 		transitions = new CellTransition[result.size()];
 		result.toArray(transitions);
-	}
-
-	
-	
+	}	
 	
 }

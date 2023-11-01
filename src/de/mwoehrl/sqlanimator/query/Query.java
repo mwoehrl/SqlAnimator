@@ -15,8 +15,9 @@ public class Query {
 	public final WHERE where;
 	public final ORDERBY orderby;
 	public final GROUPBY groupby;
+	public final WHERE having;
 	
-	public Query(String selectFields, String fromTables, String whereCondition, String groupBy, String having, String orderBy) {
+	public Query(String selectFields, String fromTables, String whereCondition, String groupBy, String havingCondition, String orderBy) {
 		select = new SELECT(selectFields);
 		from = new FROM(fromTables);
 		if (whereCondition == null) {
@@ -28,6 +29,11 @@ public class Query {
 			groupby = new GROUPBY(groupBy);
 		} else {
 			groupby = null;
+		}
+		if (havingCondition == null) {
+			having = null;
+		} else {
+			having = new WHERE(parseCondition(havingCondition), havingCondition);
 		}
 		if (orderBy != null) {
 			orderby = new ORDERBY(orderBy);
