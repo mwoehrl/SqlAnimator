@@ -29,14 +29,15 @@ public class CellCanvas extends AbstractCellCanvas{
 	
 	@Override
 	public Image drawImage() {
-		int height = 1+(int)requiredSize.getHeight();
-		int width = 1+(int)requiredSize.getWidth();
+		int height = (int)requiredSize.getHeight();
+		int width =  (int)requiredSize.getWidth();
 		Image img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) img.getGraphics();
 
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
 	            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.setRenderingHints(rh);
+		
 		
 		g.setFont(font);
 		g.setColor(backColor);
@@ -47,7 +48,7 @@ public class CellCanvas extends AbstractCellCanvas{
 
 		Rectangle2D requiredHeight = g.getFontMetrics().getStringBounds(cell.getValue(),g);
 
-		g.drawString(cell.getValue(), (int)(hPadding * scale), (int) ((height + requiredHeight.getHeight() -  5d * scale) / 2));
+		g.drawString(cell.getValue(), (float)(hPadding * scale), (float)((height + requiredHeight.getHeight() -  5d * scale) / 2));
 		return img;
 	}
 

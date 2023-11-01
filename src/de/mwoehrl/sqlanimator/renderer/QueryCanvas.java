@@ -212,9 +212,12 @@ public class QueryCanvas extends RenderCanvas {
 		AbsoluteCellPosition[] result = new AbsoluteCellPosition[textCells[n].length - 1];
 		for (int i = 1; i < textCells[n].length; i++) {
 			TextCanvas c = textCells[n][i];
-			result[i - 1] = new AbsoluteCellPosition((int) (c.position.getX() + position.getX()),
-					(int) (c.position.getY() + position.getY()), (int) c.requiredSize.getWidth(),
-					(int) c.requiredSize.getHeight(), c);
+			result[i - 1] = new AbsoluteCellPosition(
+					c.position.getX() + position.getX(),
+					c.position.getY() + position.getY(),
+					c.requiredSize.getWidth(),
+					c.requiredSize.getHeight(),
+					c);
 		}
 		return result;
 	}
@@ -225,9 +228,12 @@ public class QueryCanvas extends RenderCanvas {
 		for (int r = 0; r < length; r++) {
 			ImageCanvas imageCanvas = new ImageCanvas();
 			imageCanvas.setImage(relation.rowMatchesCondition(query.where, r) ? tick : cross);
-			result[r] = new AbsoluteCellPosition((int) (c.position.getX() + position.getX()),
-					(int) (c.position.getY() + position.getY()), (int) c.requiredSize.getHeight(),
-					(int) c.requiredSize.getHeight(), imageCanvas);
+			result[r] = new AbsoluteCellPosition(
+					c.position.getX() + position.getX(),
+					c.position.getY() + position.getY(),
+					c.requiredSize.getHeight(),
+					c.requiredSize.getHeight(),
+					imageCanvas);
 		}
 		return result;
 	}

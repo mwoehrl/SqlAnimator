@@ -34,20 +34,20 @@ public class RelationCanvas extends RenderCanvas {
 				}
 			}
 		}
-		BufferedImage img = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB);
-		calculateRequiredSizes(img.getGraphics());
+		calculateRequiredSizes();
 		setPositions();
 	}
 
 
-	private void calculateRequiredSizes(Graphics g) {
-		double requiredWidth = 0;
+	private void calculateRequiredSizes() {
+		BufferedImage img = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = img.getGraphics();
+		int requiredWidth = 0;
 		for (int i = 0; i < relation.getColumns().length; i++) {
-			double maxWidth = 0;
+			int maxWidth = 0;
 			for (int r = 0; r < relation.getRows().length + 1; r++) {
-				//cells[i][r].calculateRequiredSizes(g);
 				if (cells[i][r].requiredSize.getWidth() > maxWidth)
-					maxWidth = cells[i][r].requiredSize.getWidth();
+					maxWidth = (int)cells[i][r].requiredSize.getWidth();
 			}
 			requiredWidth += maxWidth;
 			for (int r = 0; r < relation.getRows().length + 1; r++) {
@@ -55,7 +55,7 @@ public class RelationCanvas extends RenderCanvas {
 			}
 		}
 		
-		double requiredHeight = 0;
+		int requiredHeight = 0;
 		if (cells.length > 0) {
 			for (int r = 0; r < relation.getRows().length + 1; r++) {
 				requiredHeight += cells[0][r].requiredSize.getHeight();
@@ -77,10 +77,10 @@ public class RelationCanvas extends RenderCanvas {
 	}
 	
 	private void setPositions() {
-		double colX = 0;
+		int colX = 0;
 		tableNameCanvas.setPosition((requiredSize.getWidth() - tableNameCanvas.requiredSize.getWidth())/2 , 0);
 		for (int i = 0; i < relation.getColumns().length; i++) {
-			double rowY = tableNameCanvas.requiredSize.getHeight();
+			int rowY = (int)tableNameCanvas.requiredSize.getHeight();
 			if (bucketList == null) {
 				for (int r = 0; r < relation.getRows().length + 1; r++) {
 					cells[i][r].setPosition(colX, rowY);
@@ -138,27 +138,19 @@ public class RelationCanvas extends RenderCanvas {
 				cells[i][r].scaleUp(factor);
 			}
 		}
-		requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
-		scaleUpPositions(factor);
+		//requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
+		calculateRequiredSizes();
+		//scaleUpPositions(factor);
+		setPositions();
 	}
-	
-	private void scaleUpPositions(double factor) {
-		tableNameCanvas.setPosition(tableNameCanvas.position.getX() * factor,tableNameCanvas.position.getY() * factor);
-		for (int i = 0; i < relation.getColumns().length; i++) {
-			for (int r = 0; r < relation.getRows().length + 1; r++) {
-				cells[i][r].setPosition(cells[i][r].position.getX() * factor,cells[i][r].position.getY() * factor);
-			}
-		}
-	}
-
 
 	public AbsoluteCellPosition getTableNameCellPosition() {
 		TextCanvas c = tableNameCanvas;
 		return new AbsoluteCellPosition(
-				(int)(c.position.getX() + position.getX()),
-				(int)(c.position.getY() + position.getY()),
-				(int)c.requiredSize.getWidth(),
-				(int)c.requiredSize.getHeight(),
+				c.position.getX() + position.getX(),
+				c.position.getY() + position.getY(),
+				c.requiredSize.getWidth(),
+				c.requiredSize.getHeight(),
 				c);
 	}
 	
@@ -167,13 +159,12 @@ public class RelationCanvas extends RenderCanvas {
 		for (int i = 0; i < cells.length; i++) {
 			AbstractCellCanvas c = cells[i][0];
 			result[i] = new AbsoluteCellPosition(
-					(int)(c.position.getX() + position.getX() + c.scale * (AbstractCellCanvas.hPadding - TextCanvas.hPadding)),
-					(int)(c.position.getY() + position.getY()),
-					(int)c.requiredSize.getWidth(),
-					(int)c.requiredSize.getHeight(),
+					c.position.getX() + position.getX() + c.scale * (AbstractCellCanvas.hPadding - TextCanvas.hPadding),
+					c.position.getY() + position.getY(),
+					c.requiredSize.getWidth(),
+					c.requiredSize.getHeight(),
 					c); 
 		}
-
 		return result;
 	}
 	
@@ -181,7 +172,12 @@ public class RelationCanvas extends RenderCanvas {
 		if (cells.length > 0) {
 			int count = cells.length * cells[0].length;
 			AbsoluteCellPosition[] result = new AbsoluteCellPosition[count + 1];
-			result[0] = new AbsoluteCellPosition((int)(tableNameCanvas.position.getX() + position.getX()), (int)(tableNameCanvas.position.getY() + position.getY()), (int)(tableNameCanvas.requiredSize.getWidth()), (int)(tableNameCanvas.requiredSize.getHeight()), tableNameCanvas);
+			result[0] = new AbsoluteCellPosition(
+					tableNameCanvas.position.getX() + position.getX(),
+					tableNameCanvas.position.getY() + position.getY(),
+					tableNameCanvas.requiredSize.getWidth(),
+					tableNameCanvas.requiredSize.getHeight(),
+					tableNameCanvas);
 			int index = 1;
 			for (int i = 0; i < cells.length; i++) {
 				for (int r = 0; r < cells[0].length; r++) {
@@ -199,15 +195,15 @@ public class RelationCanvas extends RenderCanvas {
 		return relation;
 	}
 
-	public AbsoluteCellPosition[] getFirstColumnCellPositions() {
+	public AbsoluteCellPosition[] getFirstColumnCellPositions() {			//For Ticks flying when evaluating WHERE
 		AbsoluteCellPosition[] result = new  AbsoluteCellPosition[cells[0].length - 1]; 
 		for (int r = 1; r < cells[0].length; r++) {
 			AbstractCellCanvas c = cells[0][r];
 			result[r - 1] = new AbsoluteCellPosition(
-					(int)(c.position.getX() + position.getX() + c.scale * (AbstractCellCanvas.hPadding - TextCanvas.hPadding))-(int)c.requiredSize.getHeight(),
-					(int)(c.position.getY() + position.getY()),
-					(int)c.requiredSize.getWidth(),
-					(int)c.requiredSize.getHeight(),
+					c.position.getX() + position.getX() + c.scale * (AbstractCellCanvas.hPadding - TextCanvas.hPadding)-c.requiredSize.getHeight(),
+					c.position.getY() + position.getY(),
+					c.requiredSize.getWidth(),
+					c.requiredSize.getHeight(),
 					c); 
 		}
 		return result;

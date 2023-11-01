@@ -97,7 +97,7 @@ public class AllRelationCanvas extends RenderCanvas {
 	}
 
 	private void setPositions() {
-		double xRel = centerPadding + padding * scale;
+		int xRel = (int)(centerPadding + padding * scale);
 		for (RelationCanvas rc : relationCanvases) {
 			rc.setPosition(xRel, padding * scale);
 			xRel += rc.requiredSize.getWidth() + spacing * scale;

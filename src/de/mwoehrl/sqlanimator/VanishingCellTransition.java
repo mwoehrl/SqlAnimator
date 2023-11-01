@@ -19,8 +19,8 @@ public class VanishingCellTransition extends CellTransition {
 	public void drawCellInTransition(Graphics g, double progress) {
 		progress = Math.sqrt(progress);
 		g.drawImage(img,
-				absoluteCellPosition.getX() + (int)(absoluteCellPosition.getW() * progress / 2),
-				absoluteCellPosition.getY() + (int)(absoluteCellPosition.getH() * progress / 2),
+				(int)(absoluteCellPosition.getX() + absoluteCellPosition.getW() * progress / 2),
+				(int)(absoluteCellPosition.getY() + absoluteCellPosition.getH() * progress / 2),
 				(int)(absoluteCellPosition.getW() * (1d-progress)),
 				(int)(absoluteCellPosition.getH() * (1d-progress)),
 				null);

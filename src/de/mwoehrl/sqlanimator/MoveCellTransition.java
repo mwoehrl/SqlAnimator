@@ -36,15 +36,10 @@ public class MoveCellTransition extends CellTransition{
 			imgIsStart = false;
 		}		
 		
-		int x = (int)(startPos.getX() + ((endPos.getX() - startPos.getX()) * progress));
-		int y = (int)(startPos.getY() + ((endPos.getY() - startPos.getY()) * progress));
-		int w = (int)(startPos.getW() + ((endPos.getW() - startPos.getW()) * progress));
-		int h = (int)(startPos.getH() + ((endPos.getH() - startPos.getH()) * progress));
-		
-		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
-	            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		((Graphics2D)g).setRenderingHints(rh);
-
+		int x = (int)(startPos.getX() + (endPos.getX() - startPos.getX()) * progress);
+		int y = (int)(startPos.getY() + (endPos.getY() - startPos.getY()) * progress);
+		int w = (int)(startPos.getW() + (endPos.getW() - startPos.getW()) * progress);
+		int h = (int)(startPos.getH() + (endPos.getH() - startPos.getH()) * progress);
 		g.drawImage(img, x, y, w, h, null);
 	}
 }

@@ -129,7 +129,14 @@ public class AggregateRelationCanvas extends RelationCanvas {
 	
 	@Override
 	public void scaleUp(double factor) {
-		super.scaleUp(factor);
+		tableNameCanvas.scaleUp(factor);
+		for (int i = 0; i < relation.getColumns().length; i++) {
+			for (int r = 0; r < relation.getRows().length + 1; r++) {
+				cells[i][r].scaleUp(factor);
+			}
+		}
+		requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
+		scaleUpPositions(factor);
 		for (int i = 0; i < aggregateCells.length; i++) {
 			for (int j = 0; j < aggregateCells[i].length; j++) {
 				AbstractCellCanvas cell = aggregateCells[i][j];
@@ -140,8 +147,22 @@ public class AggregateRelationCanvas extends RelationCanvas {
 		fallingDepth *= factor;
 	}
 	
+	private void scaleUpPositions(double factor) {
+		tableNameCanvas.setPosition(tableNameCanvas.position.getX() * factor,tableNameCanvas.position.getY() * factor);
+		for (int i = 0; i < relation.getColumns().length; i++) {
+			for (int r = 0; r < relation.getRows().length + 1; r++) {
+				cells[i][r].setPosition(cells[i][r].position.getX() * factor,cells[i][r].position.getY() * factor);
+			}
+		}
+	}
+	
 	private AbsoluteCellPosition getAbsoluteCellPosition(RenderCanvas cell, Rectangle2D parentPosition) {
-		return new AbsoluteCellPosition((int)(cell.position.getX() + position.getX() + parentPosition.getX()), (int)(cell.position.getY() + position.getY() + parentPosition.getY()), (int)(cell.requiredSize.getWidth()), (int)(cell.requiredSize.getHeight()), cell);
+		return new AbsoluteCellPosition(
+				cell.position.getX() + position.getX() + parentPosition.getX(),
+				cell.position.getY() + position.getY() + parentPosition.getY(), 
+				cell.requiredSize.getWidth(),
+				cell.requiredSize.getHeight(),
+				cell);
 	}
 	
 	public CellTransition[] getTransitions(Rectangle2D parentPosition) {

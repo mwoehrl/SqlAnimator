@@ -20,10 +20,10 @@ public class FallingCellTransition extends CellTransition {
 	
 	@Override
 	public void drawCellInTransition(Graphics g, double progress) {
-		int fall = (int)(depth * progress * progress);
-		int y = cell.getY() + fall;
+		double fall = depth * progress * progress;
+		double y = (int)(cell.getY() + fall);
 		if (y < bottom.getY()) {
-			g.drawImage(img, cell.getX(), y, null);
+			g.drawImage(img, (int)cell.getX(), (int)y, null);
 		}
 	}
 

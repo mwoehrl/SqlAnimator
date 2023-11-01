@@ -4,12 +4,12 @@ import java.awt.geom.Rectangle2D;
 
 public class AbsoluteCellPosition {
 	private final RenderCanvas cellCanvas;
-	private int x;
-	private int y;
-	private int w;
-	private int h;
+	private double x;
+	private double y;
+	private double w;
+	private double h;
 	
-	public AbsoluteCellPosition(int x,int y,int w,int h, RenderCanvas cellCanvas) {
+	public AbsoluteCellPosition(double x,double y,double w,double h, RenderCanvas cellCanvas) {
 		this.x=x;
 		this.y=y;
 		this.w=w;
@@ -17,19 +17,19 @@ public class AbsoluteCellPosition {
 		this.cellCanvas = cellCanvas;
 	}
 	
-	public int getX() {
+	public double getX() {
 		return x;
 	}
 	
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 	
-	public int getW() {
+	public double getW() {
 		return w;
 	}
 	
-	public int getH() {
+	public double getH() {
 		return h;
 	}
 	
