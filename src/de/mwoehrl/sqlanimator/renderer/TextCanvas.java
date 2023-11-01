@@ -38,16 +38,15 @@ public class TextCanvas extends RenderCanvas {
 		this.font = new Font(fontName, fontModifiers, 12);
 		this.padding = hPadding;
 	}
-	
-	@Override
-	public void calculateRequiredSizes(Graphics g) {
+
+	void calculateRequiredSizes(Graphics g) {
 		g.setFont(font);
 		requiredSize = g.getFontMetrics().getStringBounds(text.toString(),g);
 		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth()+ padding * 2, requiredSize.getHeight()+ 2*vPadding);
 	}
 
 	@Override
-	public void setPositions(double x, double y) {
+	public void setPosition(double x, double y) {
 		position = new Rectangle2D.Double(x, y, 0d, 0d);
 	}
 

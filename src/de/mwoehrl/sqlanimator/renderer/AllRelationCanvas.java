@@ -7,6 +7,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import de.mwoehrl.sqlanimator.CellTransition;
+import de.mwoehrl.sqlanimator.query.Aggregate;
 import de.mwoehrl.sqlanimator.relation.Relation;
 import de.mwoehrl.sqlanimator.relation.Row;
 
@@ -36,6 +38,23 @@ public class AllRelationCanvas extends RenderCanvas {
 		renderRelations(bucketList);
 	}
 
+	public AllRelationCanvas(Relation relation, Aggregate[] aggregates, int w,
+			int h, ArrayList<ArrayList<Row>> bucketList) {
+		relations = new Relation[] {relation};
+		targetWidth = w;
+		targetHeight = h;
+		renderRelations(bucketList, aggregates);
+	}
+
+	private void renderRelations(ArrayList<ArrayList<Row>> bucketList, Aggregate[] aggregates) {
+		relationCanvases = new RelationCanvas[1];
+		relationCanvases[0] = new AggregateRelationCanvas(relations[0], bucketList, aggregates);
+		BufferedImage img = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB);
+		calculateRequiredSizes(img.getGraphics());
+		scaleToFit();
+		setPositions();
+	}
+
 	private void renderRelations(ArrayList<ArrayList<Row>> bucketList) {
 		relationCanvases = new RelationCanvas[relations.length];
 		for (int i = 0; i < relations.length; i++) {
@@ -44,7 +63,7 @@ public class AllRelationCanvas extends RenderCanvas {
 		BufferedImage img = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB);
 		calculateRequiredSizes(img.getGraphics());
 		scaleToFit();
-		setPositions(0, 0);
+		setPositions();
 	}
 
 	private void scaleToFit() {
@@ -64,13 +83,11 @@ public class AllRelationCanvas extends RenderCanvas {
 		requiredSize = new Rectangle2D.Double(0, 0, targetWidth, targetHeight);
 	}
 
-	@Override
-	public void calculateRequiredSizes(Graphics g) {
+	private void calculateRequiredSizes(Graphics g) {
 		double w = padding;
 		double h = 0;
 
 		for (RelationCanvas rc : relationCanvases) {
-			rc.calculateRequiredSizes(g);
 			if (rc.requiredSize.getHeight() > h)
 				h = rc.requiredSize.getHeight();
 			w += rc.requiredSize.getWidth() + spacing;
@@ -79,14 +96,17 @@ public class AllRelationCanvas extends RenderCanvas {
 		requiredSize = new Rectangle2D.Double(0, 0, w, h + padding * 2);
 	}
 
-	@Override
-	public void setPositions(double x, double y) {
-		position = new Rectangle2D.Double(x, y, 0, 0);
+	private void setPositions() {
 		double xRel = centerPadding + padding * scale;
 		for (RelationCanvas rc : relationCanvases) {
-			rc.setPositions(xRel, padding * scale);
+			rc.setPosition(xRel, padding * scale);
 			xRel += rc.requiredSize.getWidth() + spacing * scale;
 		}
+	}
+
+	@Override
+	public void setPosition(double x, double y) {
+		position = new Rectangle2D.Double(x, y, 0, 0);
 	}
 
 	@Override
@@ -174,4 +194,13 @@ public class AllRelationCanvas extends RenderCanvas {
 		}
 		return result;
 	}
+	
+	public CellTransition[] getAggregateTransistions() {
+		return ((AggregateRelationCanvas)(relationCanvases[0])).getTransitions(position);
+	}
+	
+	public void setAggregateValuesFromRelation(Relation aggregatedRelation) {
+		((AggregateRelationCanvas)(relationCanvases[0])).setAggregateValuesFromRelation(aggregatedRelation);
+	}
+	
 }

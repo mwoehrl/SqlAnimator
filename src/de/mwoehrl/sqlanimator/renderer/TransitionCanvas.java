@@ -29,11 +29,7 @@ public class TransitionCanvas extends RenderCanvas {
 	}
 	
 	@Override
-	public void calculateRequiredSizes(Graphics g) {
-	}
-
-	@Override
-	public void setPositions(double x, double y) {
+	public void setPosition(double x, double y) {
 	}
 
 	@Override

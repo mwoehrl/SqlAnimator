@@ -107,7 +107,7 @@ public class QueryCanvas extends RenderCanvas {
 		BufferedImage img = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
 		calculateRequiredSizes(img.getGraphics());
 		scaleToFit();
-		setPositions(0, 0);
+		setPositions();
 	}
 
 	private void scaleToFit() {
@@ -128,8 +128,7 @@ public class QueryCanvas extends RenderCanvas {
 		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth() * scale, requiredSize.getHeight() * scale);
 	}
 
-	@Override
-	public void calculateRequiredSizes(Graphics g) {
+	private void calculateRequiredSizes(Graphics g) {
 		int h = 0;
 		int maxW = 0;
 		for (int i = 0; i < textCells.length; i++) {
@@ -148,14 +147,17 @@ public class QueryCanvas extends RenderCanvas {
 	}
 
 	@Override
-	public void setPositions(double x, double y) {
+	public void setPosition(double x, double y) {
 		position = new Rectangle2D.Double(x, y, 0, 0);
+	}
+	
+	private void setPositions() {
 		int ypos = (int) (padding * scale);
 		for (int i = 0; i < textCells.length; i++) {
 			int xpos = (int) (padding * scale);
 			double  maxH = 0;
 			for (int j = 0; j < textCells[i].length; j++) {
-				textCells[i][j].setPositions(xpos, ypos);
+				textCells[i][j].setPosition(xpos, ypos);
 				xpos += textCells[i][j].requiredSize.getWidth();
 				if (textCells[i][j].requiredSize.getHeight() > maxH) maxH = textCells[i][j].requiredSize.getHeight(); 
 			}

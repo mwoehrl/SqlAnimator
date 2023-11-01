@@ -18,10 +18,9 @@ public class CellCanvas extends AbstractCellCanvas{
 	private final Color backColor;
 
 	public CellCanvas(Cell cell, boolean isHeader) {
+		super(isHeader, cell.getValue());
 		this.cell = cell;
-		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , 12);
 		this.backColor = isHeader ? Color.LIGHT_GRAY : Color.white;
-		this.isHeader = isHeader;
 	}
 	
 	public CellCanvas(Cell cell) {
@@ -30,8 +29,8 @@ public class CellCanvas extends AbstractCellCanvas{
 	
 	@Override
 	public Image drawImage() {
-		int height = (int)requiredSize.getHeight();
-		int width = (int)requiredSize.getWidth();
+		int height = 1+(int)requiredSize.getHeight();
+		int width = 1+(int)requiredSize.getWidth();
 		Image img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) img.getGraphics();
 
@@ -45,17 +44,15 @@ public class CellCanvas extends AbstractCellCanvas{
 		g.setColor(Color.black);
 		g.setStroke(new BasicStroke((int)(scale * 1.5d), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		g.drawRect(0, 0, width-1, height-1);
-		g.drawString(cell.getValue(), (int)(hPadding * scale), height - (int)((vPadding+1) * scale));
+
+		Rectangle2D requiredHeight = g.getFontMetrics().getStringBounds(cell.getValue(),g);
+
+		g.drawString(cell.getValue(), (int)(hPadding * scale), (int) ((height + requiredHeight.getHeight() -  5d * scale) / 2));
 		return img;
 	}
 
 	public Cell getCell() {
 		return cell;
-	}
-
-	@Override
-	protected  String getCellText(){
-			return cell == null ? "?" : cell.getValue();
 	}
 
 	@Override

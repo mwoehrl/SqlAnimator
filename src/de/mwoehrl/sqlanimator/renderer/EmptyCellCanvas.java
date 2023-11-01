@@ -7,11 +7,11 @@ import java.awt.image.BufferedImage;
 
 public class EmptyCellCanvas extends AbstractCellCanvas{
 
-	@Override
-	protected String getCellText() {
-		return "?";
+
+	protected EmptyCellCanvas() {
+		super(false, "?");
 	}
-	
+
 	@Override
 	public Image drawImage() {
 		int height = (int)requiredSize.getHeight();

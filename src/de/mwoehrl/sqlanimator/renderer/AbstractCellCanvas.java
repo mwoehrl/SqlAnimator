@@ -3,31 +3,32 @@ package de.mwoehrl.sqlanimator.renderer;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
-
-import de.mwoehrl.sqlanimator.relation.Cell;
+import java.awt.image.BufferedImage;
 
 public abstract class AbstractCellCanvas extends RenderCanvas {
 	
-	protected static final String fontname = "Verdana";
+	protected String fontname = "Verdana";
 	protected static final int hPadding = 5;
-	protected static final int vPadding = 4;
+	protected static final int vPadding = 2;
 	protected Font font;
-	protected boolean isHeader;
+	protected final boolean isHeader;
 	protected double scale = 1d;
+
+	protected AbstractCellCanvas(boolean isHeader, String text) {
+		this.isHeader = isHeader;
+		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , 12);
+		calculateRequiredSizes(text);
+	}
 	
-	
-	@Override
-	public void calculateRequiredSizes(Graphics g) {
-		String text = getCellText();
+	public void calculateRequiredSizes(String text) {
+		Graphics g = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB).getGraphics();
 		g.setFont(font);
 		requiredSize = g.getFontMetrics().getStringBounds(text,g);
 		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth()+ 2*hPadding, requiredSize.getHeight()+ 2*vPadding);
 	}
-	
-	protected abstract String getCellText();
 
 	@Override
-	public void setPositions(double x, double y) {
+	public void setPosition(double x, double y) {
 		position = new Rectangle2D.Double(x, y, 0d, 0d);
 	}
 
@@ -38,8 +39,8 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 	@Override
 	public void scaleUp(double factor) {
 		requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
-		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , (int)(12 * factor));
-		this.scale = factor;
+		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , (int)(12 * this.scale * factor));
+		this.scale *= factor;
 	}
 
 }

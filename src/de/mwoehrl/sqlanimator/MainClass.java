@@ -20,7 +20,7 @@ public class MainClass {
 	
 	public static void main(String[] args) throws Exception {
 		TransitionCanvas transCanvas;
-		int steps = 16;
+		int steps = 32;
 
 		int overallWidth = 1904;
 		int overallHeight = overallWidth * 9 / 16;
@@ -28,7 +28,7 @@ public class MainClass {
 		
 		List<Relation> allRelations = readRelations();
 		
-		Query query = new Query("SUM(1) AS count,SUM(note),typ", "Noten,Schueler,Buecher", null, "typ", null, null);
+		Query query = new Query("vorname,name AS nachname,AVG(note),SUM(1) AS anzahl", "Schueler,Noten", "nr=schueler_nr", "nachname,vorname", null, "nachname");
 		
 		Director director = new Director(query, allRelations, overallWidth- queryWidth, overallHeight);
 
@@ -177,10 +177,33 @@ public class MainClass {
 			canvasPanel.setRenderCanvas(arcPreGrouped);
 			Thread.sleep(steps*40);		
 
-			AllRelationCanvas arcGrouped = director.finishGroupByStep(arcPreGrouped);
+			
+			AllRelationCanvas arcPreAggregated = director.prepareAggregationStep(arcPreGrouped);
 			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
 			canvasPanel.setTransitionCanvas(transCanvas);
-			steps = 128;
+			int quickStep = steps/2;
+			for (int i = 0; i < quickStep; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/quickStep);
+				canvasPanel.repaint();
+			}
+			canvasPanel.setRenderCanvas(arcPreAggregated);
+			Thread.sleep(steps*20);		
+
+			director.executeAggregationStep(arcPreAggregated);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
+			canvasPanel.setTransitionCanvas(transCanvas);
+			for (int i = 0; i < steps; i++) {
+				Thread.sleep(40);
+				transCanvas.advanceProgress(1d/steps);
+				canvasPanel.repaint();
+			}
+			
+			AllRelationCanvas arcGrouped = director.finishGroupByStep(arcPreAggregated);
+			transCanvas = new TransitionCanvas(director.transitions, overallWidth, overallHeight, new RenderCanvas[] {queryCanvas});
+			canvasPanel.setTransitionCanvas(transCanvas);
+			Thread.sleep(steps*40);		
+			
 			for (int i = 0; i < steps; i++) {
 				Thread.sleep(40);
 				transCanvas.advanceProgress(1d/steps);

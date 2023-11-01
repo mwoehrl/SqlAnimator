@@ -3,6 +3,7 @@ package de.mwoehrl.sqlanimator.query.expression;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import de.mwoehrl.sqlanimator.query.Aggregate;
+import de.mwoehrl.sqlanimator.query.AggregateAVG;
 import de.mwoehrl.sqlanimator.query.AggregateSUM;
 import de.mwoehrl.sqlanimator.query.ProjectionColumn;
 import de.mwoehrl.sqlanimator.query.expression.antlr.ExpressionParser.ColumnContext;
@@ -32,12 +33,13 @@ public class ExpressionFactory {
 
 
 	private static Aggregate getAggregate(ParseTree colExpression) {
-		Aggregate aggregate = null;
 		switch (colExpression.getChild(0).getText()) {
 		case "SUM":
-			aggregate = new AggregateSUM();
+			return new AggregateSUM();
+		case "AVG":
+			return new AggregateAVG();
 		}
-		return aggregate;
+		return null;
 	}
 
 	

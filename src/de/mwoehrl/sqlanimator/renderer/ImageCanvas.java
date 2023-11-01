@@ -14,15 +14,9 @@ public class ImageCanvas extends RenderCanvas {
 	public Image getImage() {
 		return img;
 	}
-	
-	@Override
-	public void calculateRequiredSizes(Graphics g) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
-	public void setPositions(double x, double y) {
+	public void setPosition(double x, double y) {
 		// TODO Auto-generated method stub
 
 	}

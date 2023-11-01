@@ -1,7 +1,6 @@
 package de.mwoehrl.sqlanimator.renderer;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -15,10 +14,10 @@ import de.mwoehrl.sqlanimator.relation.Row;
 
 public class RelationCanvas extends RenderCanvas {
 
-	private final Relation relation;
-	private final AbstractCellCanvas[][] cells;
-	private final TextCanvas tableNameCanvas;
-	private final ArrayList<ArrayList<Row>> bucketList;
+	protected final Relation relation;
+	protected final AbstractCellCanvas[][] cells;
+	protected final TextCanvas tableNameCanvas;
+	protected final ArrayList<ArrayList<Row>> bucketList;
 	
 	public RelationCanvas(Relation relation, ArrayList<ArrayList<Row>> bucketList) {
 		this.relation = relation;
@@ -35,15 +34,18 @@ public class RelationCanvas extends RenderCanvas {
 				}
 			}
 		}
+		BufferedImage img = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB);
+		calculateRequiredSizes(img.getGraphics());
+		setPositions();
 	}
 
-	@Override
-	public void calculateRequiredSizes(Graphics g) {
+
+	private void calculateRequiredSizes(Graphics g) {
 		double requiredWidth = 0;
 		for (int i = 0; i < relation.getColumns().length; i++) {
 			double maxWidth = 0;
 			for (int r = 0; r < relation.getRows().length + 1; r++) {
-				cells[i][r].calculateRequiredSizes(g);
+				//cells[i][r].calculateRequiredSizes(g);
 				if (cells[i][r].requiredSize.getWidth() > maxWidth)
 					maxWidth = cells[i][r].requiredSize.getWidth();
 			}
@@ -60,7 +62,7 @@ public class RelationCanvas extends RenderCanvas {
 			}
 			if (bucketList != null) {
 				int gapHeight = (int)cells[0][0].requiredSize.getHeight();  //Header Höhe
-				requiredHeight += gapHeight * bucketList.size();
+				requiredHeight += gapHeight * bucketList.size() + gapHeight / 2 ;
 			}
 		}
 
@@ -70,25 +72,28 @@ public class RelationCanvas extends RenderCanvas {
 	}
 
 	@Override
-	public void setPositions(double x, double y) {
+	public void setPosition(double x, double y) {
 		position = new Rectangle2D.Double(x, y, 0, 0);
+	}
+	
+	private void setPositions() {
 		double colX = 0;
-		tableNameCanvas.setPositions((requiredSize.getWidth() - tableNameCanvas.requiredSize.getWidth())/2 , 0);
+		tableNameCanvas.setPosition((requiredSize.getWidth() - tableNameCanvas.requiredSize.getWidth())/2 , 0);
 		for (int i = 0; i < relation.getColumns().length; i++) {
 			double rowY = tableNameCanvas.requiredSize.getHeight();
 			if (bucketList == null) {
 				for (int r = 0; r < relation.getRows().length + 1; r++) {
-					cells[i][r].setPositions(colX, rowY);
+					cells[i][r].setPosition(colX, rowY);
 					rowY += cells[i][r].requiredSize.getHeight();
 				}
 			} else {
-				cells[i][0].setPositions(colX, rowY);
+				cells[i][0].setPosition(colX, rowY);
 				int gapHeight = (int)cells[0][0].requiredSize.getHeight();  //Header Höhe
-				rowY += cells[i][0].requiredSize.getHeight() + gapHeight;
+				rowY += cells[i][0].requiredSize.getHeight() + gapHeight / 2;
 				int rowIndex = 1;
 				for (int b = 0; b < bucketList.size(); b++) {
 					for (int r = 0; r < bucketList.get(b).size(); r++) {
-						cells[i][r + rowIndex].setPositions(colX, rowY);
+						cells[i][r + rowIndex].setPosition(colX, rowY);
 						rowY += cells[i][r + rowIndex].requiredSize.getHeight();
 					}
 					rowIndex += bucketList.get(b).size();
@@ -134,8 +139,19 @@ public class RelationCanvas extends RenderCanvas {
 			}
 		}
 		requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
+		scaleUpPositions(factor);
 	}
 	
+	private void scaleUpPositions(double factor) {
+		tableNameCanvas.setPosition(tableNameCanvas.position.getX() * factor,tableNameCanvas.position.getY() * factor);
+		for (int i = 0; i < relation.getColumns().length; i++) {
+			for (int r = 0; r < relation.getRows().length + 1; r++) {
+				cells[i][r].setPosition(cells[i][r].position.getX() * factor,cells[i][r].position.getY() * factor);
+			}
+		}
+	}
+
+
 	public AbsoluteCellPosition getTableNameCellPosition() {
 		TextCanvas c = tableNameCanvas;
 		return new AbsoluteCellPosition(

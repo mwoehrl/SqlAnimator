@@ -14,10 +14,9 @@ public class HContainerCanvas extends RenderCanvas {
 		this.content = content;
 		BufferedImage img = new BufferedImage(16,16, BufferedImage.TYPE_INT_ARGB);
 		calculateRequiredSizes(img.getGraphics());
-		setPositions(0, 0);
+		setPositions();
 	}	
 
-	@Override
 	public void calculateRequiredSizes(Graphics g) {
 		double w = 0d;
 		double h = 0d;
@@ -29,11 +28,14 @@ public class HContainerCanvas extends RenderCanvas {
 	}
 
 	@Override
-	public void setPositions(double x, double y) {
+	public void setPosition(double x, double y) {
 		position = new Rectangle2D.Double(x, y, 0, 0);
+	}
+
+	public void setPositions() {
 		int xpos = 0;
 		for (int i = 0; i < content.length; i++) {
-			content[i].setPositions(xpos, 0);
+			content[i].setPosition(xpos, 0);
 			xpos += content[i].requiredSize.getWidth();
 		}
 	}

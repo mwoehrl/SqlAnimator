@@ -3,6 +3,7 @@ package de.mwoehrl.sqlanimator;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.mwoehrl.sqlanimator.query.Aggregate;
 import de.mwoehrl.sqlanimator.query.Query;
 import de.mwoehrl.sqlanimator.query.SELECT;
 import de.mwoehrl.sqlanimator.relation.Cell;
@@ -34,7 +35,7 @@ public class Director {
 		//Schritt 1: Leere Canvas -> Tabellen
 		Relation[] step1Relations = selectTables();
 		AllRelationCanvas step1TablesCanvas = new AllRelationCanvas(step1Relations, screenWidth, screenHeight);
-		step1TablesCanvas.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		step1TablesCanvas.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		return step1TablesCanvas;
 	}
 	
@@ -46,7 +47,7 @@ public class Director {
 			relations[i] = prevARC.getRelations()[i];
 		}
 		AllRelationCanvas newARC = new AllRelationCanvas(relations, screenWidth, screenHeight);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), newARC.getAbsoluteCellPositions());
 		return newARC;
 	}
@@ -57,7 +58,7 @@ public class Director {
 		relations[1].separateRows();
 		relations[1].multiplyRowsRowwise();
 		AllRelationCanvas newARC = new AllRelationCanvas(relations, screenWidth, screenHeight);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), newARC.getAbsoluteCellPositions());
 		return newARC;
 	}
@@ -71,7 +72,7 @@ public class Director {
 			result[i] = relations[i+1];
 		}
 		AllRelationCanvas newARC = new AllRelationCanvas(result, screenWidth, screenHeight);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), newARC.getAbsoluteCellPositions());
 		return newARC;
 	}
@@ -80,7 +81,7 @@ public class Director {
 	public AllRelationCanvas executeProjectionStep(AllRelationCanvas prevARC) throws Exception {
 		Relation projectedRelations = prevARC.getRelations()[0].projection(query.select);
 		AllRelationCanvas newARC = new AllRelationCanvas(new Relation[] {projectedRelations}, screenWidth, screenHeight);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
@@ -91,7 +92,7 @@ public class Director {
 	public AllRelationCanvas executeSelectionStep(AllRelationCanvas prevARC) throws Exception {
 		Relation selectedRelations = prevARC.getRelations()[0].selection(query.where);
 		AllRelationCanvas newARC = new AllRelationCanvas(new Relation[] {selectedRelations}, screenWidth, screenHeight);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
@@ -102,7 +103,7 @@ public class Director {
 	public AllRelationCanvas executeOrderByStep(AllRelationCanvas prevARC) throws Exception {
 		Relation orderedRelation = prevARC.getRelations()[0].orderBy(query.orderby);
 		AllRelationCanvas newARC = new AllRelationCanvas(new Relation[] {orderedRelation}, screenWidth, screenHeight);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
@@ -114,25 +115,48 @@ public class Director {
 		Relation preGroupedRelation = prevARC.getRelations()[0].prepareGroupBy(query.groupby, bucketList);
 		
 		AllRelationCanvas newARC = new AllRelationCanvas(preGroupedRelation, screenWidth, screenHeight, bucketList);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
 		return newARC;
 	}
 
-	public AllRelationCanvas finishGroupByStep(AllRelationCanvas prevARC) throws Exception {
-		Relation preGroupedRelation = prevARC.getRelations()[0].finishGroupBy(query.select, bucketList);
-		
-		AllRelationCanvas newARC = new AllRelationCanvas(new Relation[] {preGroupedRelation}, screenWidth, screenHeight);
-		newARC.setPositions(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+	public AllRelationCanvas prepareAggregationStep(AllRelationCanvas prevARC) throws Exception {
+		Aggregate[] aggregates = new Aggregate[query.select.getProjectionColumns().length];
+		for (int i = 0; i < aggregates.length; i++) {
+			aggregates[i] = query.select.getProjectionColumns()[i].aggregate;
+		}
+		AllRelationCanvas newARC = new AllRelationCanvas(prevARC.getRelations()[0], aggregates, screenWidth, screenHeight, bucketList);
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
 		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
 		return newARC;
 	}
+	
+	public AllRelationCanvas executeAggregationStep(AllRelationCanvas prevARC) throws Exception {
+		transitions = prevARC.getAggregateTransistions();
+		return prevARC;
+	}	
+	
+	public AllRelationCanvas finishGroupByStep(AllRelationCanvas prevARC) throws Exception {
+		Relation groupedRelation = prevARC.getRelations()[0].finishGroupBy(query.select, bucketList);
+		prevARC.setAggregateValuesFromRelation(groupedRelation);
+		
+		AllRelationCanvas newARC = new AllRelationCanvas(new Relation[] {groupedRelation}, screenWidth, screenHeight);
+		newARC.setPosition(prevARC.getPosition().getX(), prevARC.getPosition().getY());
+		AbsoluteCellPosition[] toCellsDest = newARC.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
+		transitions = matchTransitions(fromPositions, toCellsDest, false);
+		return newARC;
+	}
 		
 	private CellTransition[] matchTransitions(AbsoluteCellPosition[] src, AbsoluteCellPosition[] dest) {
+		return matchTransitions(src, dest, true);
+	}
+	
+	private CellTransition[] matchTransitions(AbsoluteCellPosition[] src, AbsoluteCellPosition[] dest, boolean showVanishing) {
 		ArrayList<CellTransition> result = new ArrayList<CellTransition>(); 
 		for (int i = 0; i < dest.length; i++) {
 			for (int j = 0; j < src.length; j++) {
@@ -142,7 +166,7 @@ public class Director {
 			}
 		}
 		ArrayList<AbsoluteCellPosition> lost = new ArrayList<AbsoluteCellPosition>(); 
-		for (int j = 0; j < src.length; j++) {
+		for (int j = 0; j < src.length && showVanishing; j++) {
 			boolean found = false;
 			for (int i = 0; i < dest.length && !found; i++) {
 				if (dest[i].getCellCanvas().getCoreObject() != null && dest[i].getCellCanvas().getCoreObject()==src[j].getCellCanvas().getCoreObject()) {
@@ -201,7 +225,7 @@ public class Director {
 			relations[i].cloneAllCells();
 		}
 		AllRelationCanvas newARC = new AllRelationCanvas(relations, screenWidth, screenHeight);
-		newARC.setPositions(arc.getPosition().getX(), arc.getPosition().getY());
+		newARC.setPosition(arc.getPosition().getX(), arc.getPosition().getY());
 		return newARC;
 	}
 
