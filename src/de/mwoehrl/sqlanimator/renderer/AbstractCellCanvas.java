@@ -14,7 +14,7 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 	protected Font font;
 	protected final boolean isHeader;
 	protected double scale = 1d;
-	protected boolean isOddLine = false;
+	protected boolean isEvenLine = false;
 
 	protected AbstractCellCanvas(boolean isHeader, String text) {
 		this.isHeader = isHeader;
@@ -46,7 +46,7 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 	}
 	
 	protected Color getOddColor(Color color) {
-		if (isOddLine) {
+		if (isEvenLine) {
 			return new Color(color.getRed() * 0.9f / 256f, color.getGreen() * 0.9f / 256f, color.getBlue() * 0.9f / 256f);
 		} else {
 			return color;

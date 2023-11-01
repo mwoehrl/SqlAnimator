@@ -20,7 +20,7 @@ public class CellCanvas extends AbstractCellCanvas{
 	public CellCanvas(Cell cell, boolean isHeader) {
 		super(isHeader, cell.getValue());
 		this.cell = cell;
-		this.backColor = isHeader ? new Color(216,220,255) : Color.WHITE;
+		this.backColor = isHeader ? new Color(194,198,230) : Color.WHITE;
 	}
 	
 	public CellCanvas(Cell cell) {
