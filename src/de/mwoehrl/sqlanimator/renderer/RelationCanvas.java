@@ -84,6 +84,7 @@ public class RelationCanvas extends RenderCanvas {
 			if (bucketList == null) {
 				for (int r = 0; r < relation.getRows().length + 1; r++) {
 					cells[i][r].setPosition(colX, rowY);
+					cells[i][r].isOddLine = ((r & 1) == 0);
 					rowY += cells[i][r].requiredSize.getHeight();
 				}
 			} else {

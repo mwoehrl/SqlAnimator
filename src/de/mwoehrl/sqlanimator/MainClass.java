@@ -22,7 +22,7 @@ public class MainClass {
 		TransitionCanvas transCanvas;
 		int steps = 20;
 
-		int overallWidth = 1904;
+		int overallWidth = 1920;
 		int overallHeight = overallWidth * 9 / 16;
 		int queryWidth = overallWidth / 4;
 		

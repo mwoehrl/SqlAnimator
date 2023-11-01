@@ -20,7 +20,7 @@ public class CellCanvas extends AbstractCellCanvas{
 	public CellCanvas(Cell cell, boolean isHeader) {
 		super(isHeader, cell.getValue());
 		this.cell = cell;
-		this.backColor = isHeader ? Color.LIGHT_GRAY : Color.white;
+		this.backColor = isHeader ? new Color(216,220,255) : Color.WHITE;
 	}
 	
 	public CellCanvas(Cell cell) {
@@ -38,12 +38,11 @@ public class CellCanvas extends AbstractCellCanvas{
 	            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.setRenderingHints(rh);
 		
-		
 		g.setFont(font);
-		g.setColor(backColor);
+		g.setColor(getOddColor(backColor));
 		g.fillRect(0, 0, width, height);
 		g.setColor(Color.black);
-		g.setStroke(new BasicStroke((int)(scale * 1.5d), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+		g.setStroke(new BasicStroke((int)(scale * (isHeader ? 1.5d : 0.8d)), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		g.drawRect(0, 0, width-1, height-1);
 
 		Rectangle2D requiredHeight = g.getFontMetrics().getStringBounds(cell.getValue(),g);

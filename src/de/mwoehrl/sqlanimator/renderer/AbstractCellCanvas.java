@@ -1,5 +1,6 @@
 package de.mwoehrl.sqlanimator.renderer;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
@@ -13,6 +14,7 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 	protected Font font;
 	protected final boolean isHeader;
 	protected double scale = 1d;
+	protected boolean isOddLine = false;
 
 	protected AbstractCellCanvas(boolean isHeader, String text) {
 		this.isHeader = isHeader;
@@ -41,6 +43,14 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 		requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
 		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , (int)(12 * this.scale * factor));
 		this.scale *= factor;
+	}
+	
+	protected Color getOddColor(Color color) {
+		if (isOddLine) {
+			return new Color(color.getRed() * 0.9f / 256f, color.getGreen() * 0.9f / 256f, color.getBlue() * 0.9f / 256f);
+		} else {
+			return color;
+		}
 	}
 
 }
