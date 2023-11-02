@@ -10,10 +10,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class TextCanvas extends RenderCanvas {
+	private static final int initialFontSize = 24;
 	protected final String fontname;
-	protected static final int hPadding = 2;
+	protected static final int hPadding = 4;
 	protected final int padding;
-	protected static final int vPadding = 3;
+	protected static final int vPadding = 6;
 	protected Font font;
 	protected int  fontModifiers;
 	protected double scale = 1d;
@@ -35,14 +36,17 @@ public class TextCanvas extends RenderCanvas {
 		this.fontname = fontName;
 		this.fontColor = fontColor;
 		this.fontModifiers = fontModifiers;
-		this.font = new Font(fontName, fontModifiers, 12);
+		this.font = new Font(fontName, fontModifiers, initialFontSize);
 		this.padding = hPadding;
+		calculateRequiredSizes();
 	}
 
-	void calculateRequiredSizes(Graphics g) {
+	private void calculateRequiredSizes() {
+		BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = img.getGraphics();
 		g.setFont(font);
 		requiredSize = g.getFontMetrics().getStringBounds(text.toString(),g);
-		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth()+ padding * 2, requiredSize.getHeight()+ 2*vPadding);
+		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth() + padding * 2, requiredSize.getHeight()+ 2*vPadding);
 	}
 
 	@Override
@@ -75,7 +79,7 @@ public class TextCanvas extends RenderCanvas {
 	@Override
 	public void scaleUp(double factor) {
 		requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
-		this.font = new Font(fontname, fontModifiers, (int)(12 * factor));
+		this.font = new Font(fontname, fontModifiers, (int)(initialFontSize * factor));
 		this.scale = factor;
 	}
 

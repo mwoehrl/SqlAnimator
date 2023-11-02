@@ -7,10 +7,10 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public abstract class AbstractCellCanvas extends RenderCanvas {
-	
+	protected static final int initialFontSize = 24;
 	protected String fontname = "Verdana";
-	protected static final int hPadding = 5;
-	protected static final int vPadding = 2;
+	protected static final int hPadding = 10;
+	protected static final int vPadding = 5;
 	protected Font font;
 	protected final boolean isHeader;
 	protected double scale = 1d;
@@ -18,7 +18,7 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 
 	protected AbstractCellCanvas(boolean isHeader, String text) {
 		this.isHeader = isHeader;
-		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , 12);
+		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , initialFontSize);
 		calculateRequiredSizes(text);
 	}
 	
@@ -41,7 +41,7 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 	@Override
 	public void scaleUp(double factor) {
 		requiredSize = new Rectangle2D.Double(0, 0, (int)(requiredSize.getWidth() * factor), (int)(requiredSize.getHeight() * factor));
-		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , (int)(12 * this.scale * factor));
+		this.font = new Font(fontname, isHeader ? Font.BOLD : 0 , (int)(initialFontSize * this.scale * factor));
 		this.scale *= factor;
 	}
 	

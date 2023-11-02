@@ -18,7 +18,7 @@ public class EmptyCellCanvas extends AbstractCellCanvas{
 		int width = (int)requiredSize.getWidth();
 		Image img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) img.getGraphics();
-		g.setColor(Color.YELLOW);
+		g.setColor(getOddColor(new Color(255,255,220)));
 		g.fillRect(0, 0, width, height);
 		return img;
 	}

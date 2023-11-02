@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -46,7 +47,7 @@ public class AggregateCellCanvas extends AbstractCellCanvas {
 		g.setFont(font);
 		int[] x = new int[] {(int)(2*scale), (int)(hPadding*scale), width-(int)(hPadding*scale) -1, width-(int)(2*scale)};
 		int[] y = new int[] {(int)(2*scale), height-(int)(2*scale)-1, height-(int)(2*scale)-1, (int)(2*scale)};
-		g.setColor(new Color(255, 255, 192));
+		if (isHeader) g.setPaint(new LinearGradientPaint(0f,0f,0f,height,new float[] {0.0f, 1.0f}, new Color[] {new Color(255, 255, 245), new Color(255, 255, 180)}));
 		g.fillPolygon(x, y, x.length);
 
 		g.setColor(Color.black);

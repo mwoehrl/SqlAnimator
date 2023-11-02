@@ -1,6 +1,5 @@
 package de.mwoehrl.sqlanimator.renderer;
 
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 

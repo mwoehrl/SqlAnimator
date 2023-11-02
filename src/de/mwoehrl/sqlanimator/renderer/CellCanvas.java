@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -14,13 +15,15 @@ import de.mwoehrl.sqlanimator.relation.Cell;
 
 public class CellCanvas extends AbstractCellCanvas{
 
+	private static final Color COLOR_Header = new Color(160,170,225);
+	private static final Color COLOR_HeaderGradient = new Color(225,230,255);
 	private final Cell cell;
 	private final Color backColor;
 
 	public CellCanvas(Cell cell, boolean isHeader) {
 		super(isHeader, cell.getValue());
 		this.cell = cell;
-		this.backColor = isHeader ? new Color(194,198,230) : Color.WHITE;
+		this.backColor = isHeader ? COLOR_Header : new Color(248,248,253);
 	}
 	
 	public CellCanvas(Cell cell) {
@@ -39,10 +42,14 @@ public class CellCanvas extends AbstractCellCanvas{
 		g.setRenderingHints(rh);
 		
 		g.setFont(font);
-		g.setColor(getOddColor(backColor));
+		if (isHeader) {
+			g.setPaint(new LinearGradientPaint(0f,0f,0f,height,new float[] {0.1f, 1.0f}, new Color[] {COLOR_HeaderGradient , this.backColor}));
+		} else {
+			g.setColor(getOddColor(backColor));
+		}
 		g.fillRect(0, 0, width, height);
 		g.setColor(Color.black);
-		g.setStroke(new BasicStroke((int)(scale * (isHeader ? 1.5d : 0.8d)), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+		g.setStroke(new BasicStroke((int)(scale * (isHeader ? 2.5d : 1.8d)), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		g.drawRect(0, 0, width-1, height-1);
 
 		Rectangle2D requiredHeight = g.getFontMetrics().getStringBounds(cell.getValue(),g);

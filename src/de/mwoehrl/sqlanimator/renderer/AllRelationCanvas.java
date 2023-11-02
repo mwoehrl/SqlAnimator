@@ -13,8 +13,8 @@ import de.mwoehrl.sqlanimator.relation.Relation;
 import de.mwoehrl.sqlanimator.relation.Row;
 
 public class AllRelationCanvas extends RenderCanvas {
-	private static final int padding = 10;
-	private static final int spacing = 30;
+	private static final int padding = 20;
+	private static final int spacing = 60;
 	private int centerPadding = 0;
 
 	private final Relation[] relations;

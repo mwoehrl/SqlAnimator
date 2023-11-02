@@ -65,6 +65,7 @@ public class AggregateRelationCanvas extends RelationCanvas {
 					for (int i = 0; i < bucketList.get(b).size(); i++) {
 						cells[c][r + i].setPosition(x, y);
 						cells[c][r + i].requiredSize = new Rectangle2D.Double(0,0,w,h);
+						cells[c][r + i].isEvenLine = (b & 1)==1; 
 						tp = new TransitionPair();		//Cell transition onto istself
 						tp.start = cells[c][r + i];
 						tp.end = tp.start ;
@@ -190,6 +191,7 @@ public class AggregateRelationCanvas extends RelationCanvas {
 				newCell.scaleUp(oldCell.scale);
 				newCell.position = oldCell.position;
 				newCell.adjustWidth(cells[aggregateOrdinals[i]][0].requiredSize.getWidth());
+				newCell.isEvenLine = (r & 1) == 1;
 				aggregateCells[i][r] = newCell;
 			}
 		}

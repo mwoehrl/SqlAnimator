@@ -65,8 +65,6 @@ public class RelationCanvas extends RenderCanvas {
 				requiredHeight += gapHeight * bucketList.size() + gapHeight / 2 ;
 			}
 		}
-
-		tableNameCanvas.calculateRequiredSizes(g);
 		if (requiredWidth == 0) requiredWidth = 60;		//Falls 0 spalten
 		requiredSize = new Rectangle2D.Double(0, 0, requiredWidth, requiredHeight + tableNameCanvas.requiredSize.getHeight());		
 	}
@@ -95,6 +93,7 @@ public class RelationCanvas extends RenderCanvas {
 				for (int b = 0; b < bucketList.size(); b++) {
 					for (int r = 0; r < bucketList.get(b).size(); r++) {
 						cells[i][r + rowIndex].setPosition(colX, rowY);
+						cells[i][r + rowIndex].isEvenLine = (b & 1) == 1;
 						rowY += cells[i][r + rowIndex].requiredSize.getHeight();
 					}
 					rowIndex += bucketList.get(b).size();

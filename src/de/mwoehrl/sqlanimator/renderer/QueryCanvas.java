@@ -2,7 +2,6 @@ package de.mwoehrl.sqlanimator.renderer;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -20,12 +19,13 @@ import de.mwoehrl.sqlanimator.query.expression.ExpressionToken.TokenType;
 import de.mwoehrl.sqlanimator.relation.Relation;
 
 public class QueryCanvas extends RenderCanvas {
+	private static final Color COLOR_Background = new Color (245,240,220);
 	private static final int padding = 5;
 	private static final Color keywordColor = new Color(0, 0, 192);
 
 	private final int targetWidth;
 	private final int targetHeight;
-	private double scale;
+	private double scale = 1d;
 
 	private final TextCanvas[][] textCells;
 	private BufferedImage tick;
@@ -111,10 +111,9 @@ public class QueryCanvas extends RenderCanvas {
 	}
 
 	private void renderRelations() {
-		BufferedImage img = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
-		calculateRequiredSizes(img.getGraphics());
-		scaleToFit();
 		setPositions();
+		calculateRequiredSizes();
+		scaleToFit();
 	}
 
 	private void scaleToFit() {
@@ -130,27 +129,28 @@ public class QueryCanvas extends RenderCanvas {
 		for (int i = 0; i < textCells.length; i++) {
 			for (int j = 0; j < textCells[i].length; j++) {
 				textCells[i][j].scaleUp(scale);
+				textCells[i][j].setPosition(textCells[i][j].position.getX() * scale,textCells[i][j].position.getY() * scale);
 			}
 		}
 		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth() * scale, requiredSize.getHeight() * scale);
 	}
 
-	private void calculateRequiredSizes(Graphics g) {
-		int h = 0;
+	private void calculateRequiredSizes() {
+		int h;
 		int maxW = 0;
+		double  maxH = 0;
+		int w;
 		for (int i = 0; i < textCells.length; i++) {
-			int w = padding;
-			double  maxH = 0;
 			for (int j = 0; j < textCells[i].length; j++) {
-				textCells[i][j].calculateRequiredSizes(g);
-				w += textCells[i][j].requiredSize.getWidth();
-				if (textCells[i][j].requiredSize.getHeight() > maxH) maxH = textCells[i][j].requiredSize.getHeight(); 
+				w = (int)(textCells[i][j].position.getX() + textCells[i][j].requiredSize.getWidth());
+				h = (int)(textCells[i][j].position.getY() + textCells[i][j].requiredSize.getHeight());
+				if (w > maxW)
+					maxW = w;
+				if (h > maxH)
+					maxH = h;
 			}
-			if (w > maxW)
-				maxW = w;
-			h += maxH;
 		}
-		requiredSize = new Rectangle2D.Double(0, 0, maxW + padding, h + padding * 2);
+		requiredSize = new Rectangle2D.Double(0, 0, maxW + padding, maxH + padding * 2);
 	}
 
 	@Override
@@ -167,6 +167,10 @@ public class QueryCanvas extends RenderCanvas {
 				textCells[i][j].setPosition(xpos, ypos);
 				xpos += textCells[i][j].requiredSize.getWidth();
 				if (textCells[i][j].requiredSize.getHeight() > maxH) maxH = textCells[i][j].requiredSize.getHeight(); 
+				if (xpos > 400 && textCells[i][j].getCoreObject().equals(", ")) {
+					xpos = 25;
+					ypos += maxH - TextCanvas.vPadding * scale;
+				}
 			}
 			for (int j = 0; j < textCells[i].length; j++) {
 				textCells[i][j].adjustHeight(maxH); 
@@ -186,7 +190,7 @@ public class QueryCanvas extends RenderCanvas {
 				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		g.setRenderingHints(rh);
 
-		g.setColor(Color.LIGHT_GRAY);
+		g.setColor(COLOR_Background);
 		g.fillRect(0, 0, width, height);
 
 		for (int i = 0; i < textCells.length; i++) {
