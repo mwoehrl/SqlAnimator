@@ -5,10 +5,10 @@ import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import de.mwoehrl.sqlanimator.AggregateCellTransition;
-import de.mwoehrl.sqlanimator.CellTransition;
-import de.mwoehrl.sqlanimator.FallingCellTransition;
-import de.mwoehrl.sqlanimator.MoveCellTransition;
+import de.mwoehrl.sqlanimator.execution.AggregateCellTransition;
+import de.mwoehrl.sqlanimator.execution.CellTransition;
+import de.mwoehrl.sqlanimator.execution.FallingCellTransition;
+import de.mwoehrl.sqlanimator.execution.MoveCellTransition;
 import de.mwoehrl.sqlanimator.query.Aggregate;
 import de.mwoehrl.sqlanimator.relation.Cell;
 import de.mwoehrl.sqlanimator.relation.Relation;

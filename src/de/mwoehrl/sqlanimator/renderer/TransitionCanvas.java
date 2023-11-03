@@ -7,7 +7,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import de.mwoehrl.sqlanimator.CellTransition;
+import de.mwoehrl.sqlanimator.execution.CellTransition;
 
 public class TransitionCanvas extends RenderCanvas {
 
@@ -58,14 +58,12 @@ public class TransitionCanvas extends RenderCanvas {
 	public void scaleUp(double factor) {
 	}
 
-	public void advanceProgress(double d) {
-		progress += d;
-	}
-
 	@Override
 	public Object getCoreObject() {
 		return null;
 	}
 
-	
+	public void setProgress(double p) {
+		this.progress = p;
+	}
 }

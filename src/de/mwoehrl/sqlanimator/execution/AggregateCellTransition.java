@@ -1,4 +1,4 @@
-package de.mwoehrl.sqlanimator;
+package de.mwoehrl.sqlanimator.execution;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

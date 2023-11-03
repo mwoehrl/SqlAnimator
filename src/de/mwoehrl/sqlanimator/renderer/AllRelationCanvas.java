@@ -7,12 +7,15 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import de.mwoehrl.sqlanimator.CellTransition;
+import de.mwoehrl.sqlanimator.execution.CellTransition;
 import de.mwoehrl.sqlanimator.query.Aggregate;
 import de.mwoehrl.sqlanimator.relation.Relation;
 import de.mwoehrl.sqlanimator.relation.Row;
 
 public class AllRelationCanvas extends RenderCanvas {
+	public static int screenWidth;
+	public static int screenHeight;
+	
 	private static final int padding = 20;
 	private static final int spacing = 60;
 	private int centerPadding = 0;
@@ -23,26 +26,27 @@ public class AllRelationCanvas extends RenderCanvas {
 	private final int targetHeight;
 	private double scale;
 
-	public AllRelationCanvas(Relation[] allRelations, int w, int h) {
+	public AllRelationCanvas(Relation[] allRelations, Rectangle2D position) {
 		relations = allRelations;
-		targetWidth = w;
-		targetHeight = h;
+		targetWidth = screenWidth;
+		targetHeight = screenHeight;
+		this.position = position;
 		renderRelations(null);
 	}
 
-	public AllRelationCanvas(Relation relation, int w, int h,
-			ArrayList<ArrayList<Row>> bucketList) {
+	public AllRelationCanvas(Relation relation, ArrayList<ArrayList<Row>> bucketList, Rectangle2D position) {
 		relations = new Relation[] {relation};
-		targetWidth = w;
-		targetHeight = h;
+		targetWidth = screenWidth;
+		targetHeight = screenHeight;
+		this.position = position;
 		renderRelations(bucketList);
 	}
 
-	public AllRelationCanvas(Relation relation, Aggregate[] aggregates, int w,
-			int h, ArrayList<ArrayList<Row>> bucketList) {
+	public AllRelationCanvas(Relation relation, Aggregate[] aggregates, ArrayList<ArrayList<Row>> bucketList, Rectangle2D position) {
 		relations = new Relation[] {relation};
-		targetWidth = w;
-		targetHeight = h;
+		targetWidth = screenWidth;
+		targetHeight = screenHeight;
+		this.position = position;
 		renderRelations(bucketList, aggregates);
 	}
 

@@ -1,7 +1,8 @@
-package de.mwoehrl.sqlanimator;
+package de.mwoehrl.sqlanimator.execution;
 
 import java.awt.Graphics;
 import java.awt.Image;
+
 import de.mwoehrl.sqlanimator.renderer.AbsoluteCellPosition;
 
 public class FallingCellTransition extends CellTransition {

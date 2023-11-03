@@ -32,7 +32,7 @@ public class HContainerCanvas extends RenderCanvas {
 		position = new Rectangle2D.Double(x, y, 0, 0);
 	}
 
-	public void setPositions() {
+	private void setPositions() {
 		int xpos = 0;
 		for (int i = 0; i < content.length; i++) {
 			content[i].setPosition(xpos, 0);

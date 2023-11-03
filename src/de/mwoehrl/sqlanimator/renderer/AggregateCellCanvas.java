@@ -51,7 +51,7 @@ public class AggregateCellCanvas extends AbstractCellCanvas {
 		g.fillPolygon(x, y, x.length);
 
 		g.setColor(Color.black);
-		g.setStroke(new BasicStroke((int)(scale * 1.0d), BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND));
+		g.setStroke(new BasicStroke((int)(scale * 2.0d), BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND));
 		g.drawPolyline(x, y, x.length);
 
 		Rectangle2D requiredHeight = g.getFontMetrics().getStringBounds(text, g);
