@@ -50,11 +50,6 @@ public class TextCanvas extends RenderCanvas {
 	}
 
 	@Override
-	public void setPosition(double x, double y) {
-		position = new Rectangle2D.Double(x, y, 0d, 0d);
-	}
-
-	@Override
 	public Image drawImage() {
 		int height = (int)requiredSize.getHeight();
 		int width = (int)requiredSize.getWidth();

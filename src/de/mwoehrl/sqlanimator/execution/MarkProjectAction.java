@@ -15,6 +15,7 @@ public class MarkProjectAction extends AbstractAction {
 	public MarkProjectAction(Query query, QueryCanvas queryCanvas) {
 		super(query, defaultSteps, true);
 		this.queryCanvas = queryCanvas;
+		showResultAfterAnimation = true;
 	}
 
 	@Override

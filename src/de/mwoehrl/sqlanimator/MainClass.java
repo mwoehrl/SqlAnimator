@@ -14,6 +14,7 @@ import de.mwoehrl.sqlanimator.query.Query;
 import de.mwoehrl.sqlanimator.relation.Relation;
 import de.mwoehrl.sqlanimator.renderer.AllRelationCanvas;
 import de.mwoehrl.sqlanimator.renderer.CanvasPanel;
+import de.mwoehrl.sqlanimator.renderer.ControlPanelCanvas;
 import de.mwoehrl.sqlanimator.renderer.QueryCanvas;
 
 public class MainClass {
@@ -28,23 +29,19 @@ public class MainClass {
 		List<Relation> allRelations = readRelations();
 		Query query = new Query("vorname,name AS nachname,AVG(note),COUNT(note) AS anzahl", "Schueler,Noten", "schueler_nr=nr", "nachname,vorname", "anzahl<3", "vorname");
 
-		QueryCanvas queryCanvas = new QueryCanvas(query, queryWidth, overallHeight);
 		AllRelationCanvas arcEmpty = new AllRelationCanvas(new Relation[0], new Rectangle2D.Double(0d,0d,0d,0d));
-		
-		CanvasPanel canvasPanel = new CanvasPanel(queryCanvas, arcEmpty);
+		QueryCanvas queryCanvas = new QueryCanvas(query, queryWidth, overallHeight);
+		ControlPanelCanvas controlPanel = new ControlPanelCanvas(queryWidth, queryWidth/2);
+		CanvasPanel canvasPanel = new CanvasPanel(queryCanvas,controlPanel, arcEmpty);
+		ExecutionController controller = new ExecutionController(ExecutionStep.createAllExecutionSteps(query, allRelations, arcEmpty, queryCanvas), canvasPanel);
+		controlPanel.setController(controller);
+
 		JFrame frame = new JFrame("Animation");
 		frame.setVisible(true);
 		frame.setSize(overallWidth+16, overallHeight+40);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(canvasPanel);
 
-		ExecutionController controller = new ExecutionController(ExecutionStep.createAllExecutionSteps(query, allRelations, arcEmpty, queryCanvas), canvasPanel);
-		
-		controller.playAllSteps();
-
-		controller.goToStepInProgress(4, 0.90);
-		Thread.sleep(1000);
-		controller.goToStepInProgress(4, 0.85);
 	}
 	
 	private static List<Relation> readRelations() {

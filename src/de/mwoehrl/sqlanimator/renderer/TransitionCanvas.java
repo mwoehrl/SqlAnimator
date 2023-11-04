@@ -27,10 +27,6 @@ public class TransitionCanvas extends RenderCanvas {
 		this.height = h;
 		this.staticCanvases = staticCanvases;
 	}
-	
-	@Override
-	public void setPosition(double x, double y) {
-	}
 
 	@Override
 	public Image drawImage() {

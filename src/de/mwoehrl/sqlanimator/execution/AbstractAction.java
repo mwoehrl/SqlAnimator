@@ -17,6 +17,8 @@ public abstract class AbstractAction {
 	protected CellTransition[] transitions;
 	protected AllRelationCanvas resultingCanvas;
 	private final boolean showARCinAnimation;
+	private int animationStep;
+	protected boolean showResultAfterAnimation = false;
 	
 	protected AbstractAction(Query query) {
 		this(query, defaultSteps, false);
@@ -46,15 +48,18 @@ public abstract class AbstractAction {
 				canvasPanel.getHeight(), staticCanvases);
 		canvasPanel.setTransitionCanvas(transCanvas);
 
-		for (int i = 0; i < animationFrameCount; i++) {
+		for (animationStep = 0; animationStep < animationFrameCount; animationStep++) {
+			transCanvas.setProgress(((double)animationStep) / animationFrameCount);
+			canvasPanel.repaint();
 			try {
 				Thread.sleep(40);
 			} catch (InterruptedException e) {
 			}
-			transCanvas.setProgress(((double)i) / animationFrameCount);
-			canvasPanel.repaint();
 		}
-		canvasPanel.setRenderCanvas(resultingCanvas);
+		transCanvas.setProgress(1d);
+		canvasPanel.repaint();
+
+		if (showResultAfterAnimation ) canvasPanel.setRenderCanvas(resultingCanvas);
 	}
 	
 	protected CellTransition[] matchTransitions(AbsoluteCellPosition[] src, AbsoluteCellPosition[] dest) {

@@ -17,6 +17,7 @@ public class PickTablesAction extends AbstractAction {
 		super(query);
 		this.originalRelations = originalRelations;
 		this.queryCanvas = queryCanvas;
+		showResultAfterAnimation = true;
 	}
 
 	@Override

@@ -7,8 +7,12 @@ public abstract class RenderCanvas {
 	protected Rectangle2D requiredSize;
 	protected Rectangle2D position;
 	
-	public abstract void setPosition(double x, double y);
 	public abstract Image drawImage();
 	public abstract void scaleUp(double factor);
 	public abstract Object getCoreObject();
+	
+	public void setPosition(double x, double y) {
+		position = new Rectangle2D.Double(x, y, 0d, 0d);
+	}
+
 }

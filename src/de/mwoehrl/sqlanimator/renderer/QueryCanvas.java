@@ -152,11 +152,6 @@ public class QueryCanvas extends RenderCanvas {
 		}
 		requiredSize = new Rectangle2D.Double(0, 0, maxW + padding, maxH + padding * 2);
 	}
-
-	@Override
-	public void setPosition(double x, double y) {
-		position = new Rectangle2D.Double(x, y, 0, 0);
-	}
 	
 	private void setPositions() {
 		int ypos = (int) (padding * scale);
@@ -191,7 +186,7 @@ public class QueryCanvas extends RenderCanvas {
 		g.setRenderingHints(rh);
 
 		g.setColor(COLOR_Background);
-		g.fillRect(0, 0, width, height);
+		g.fill3DRect(0, 0, width, height, true);
 
 		for (int i = 0; i < textCells.length; i++) {
 			for (int j = 0; j < textCells[i].length; j++) {

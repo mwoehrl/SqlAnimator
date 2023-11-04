@@ -33,6 +33,10 @@ public class MoveCellTransition extends CellTransition{
 			img = endPos.getCellCanvas().drawImage();
 			imgIsStart = false;
 		}		
+		if (!imgIsStart && !alwaysSource && progress < 0.5d ) {
+			img = startPos.getCellCanvas().drawImage();
+			imgIsStart = true;
+		}		
 		
 		int x = (int)(startPos.getX() + (endPos.getX() - startPos.getX()) * progress);
 		int y = (int)(startPos.getY() + (endPos.getY() - startPos.getY()) * progress);

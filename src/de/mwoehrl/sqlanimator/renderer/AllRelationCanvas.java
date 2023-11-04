@@ -109,11 +109,6 @@ public class AllRelationCanvas extends RenderCanvas {
 	}
 
 	@Override
-	public void setPosition(double x, double y) {
-		position = new Rectangle2D.Double(x, y, 0, 0);
-	}
-
-	@Override
 	public Image drawImage() {
 		Image img = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics g = img.getGraphics();

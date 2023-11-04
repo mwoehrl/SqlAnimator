@@ -15,6 +15,7 @@ public class ExecutionStep {
 	private final String name;
 	private final AbstractAction[] actions;
 	private PerformActionException preparationException = null;
+	private int animationStep = 0;
 	
 	private ExecutionStep(String name, AbstractAction[] actions) {
 		this.name = name;
@@ -113,11 +114,20 @@ public class ExecutionStep {
 	}
 	
 	public void doAnimation(CanvasPanel canvasPanel) {
-		for (AbstractAction action : actions) {
-			action.doAnimation(canvasPanel);
+		for (animationStep = 0; animationStep < actions.length; animationStep++) {
+			actions[animationStep].doAnimation(canvasPanel);
 		}		
 	}
 
+	
+	public void doNextAnimationStep(CanvasPanel canvasPanel) {
+		if (animationStep < actions.length) {
+			actions[animationStep].doAnimation(canvasPanel);
+			animationStep++;
+		}		
+	}
+
+	
 	public void gotoResult(CanvasPanel canvasPanel) {
 		actions[actions.length-1].gotoResult(canvasPanel);
 	}
@@ -125,5 +135,17 @@ public class ExecutionStep {
 	public void gotoAnimationProgress(CanvasPanel canvasPanel, double progress) {
 		int actionIndex = (int)(progress / (1d / actions.length));
 		actions[actionIndex].gotoAnimationProgress(canvasPanel, (progress - (actionIndex * (1d / actions.length)))* actions.length);
+	}
+	
+	public boolean isFinishedAnimating() {
+		return animationStep == actions.length;
+	}
+
+	public boolean isInStartPosition() {
+		return animationStep == 0;
+	}
+
+	public void resetAnimationProgress() {
+		animationStep = 0;
 	}
 }

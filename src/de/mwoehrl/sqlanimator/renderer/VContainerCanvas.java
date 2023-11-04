@@ -5,10 +5,11 @@ import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-public class HContainerCanvas extends RenderCanvas {
+public class VContainerCanvas extends RenderCanvas {
+
 	private final RenderCanvas[] content;
 
-	public HContainerCanvas(RenderCanvas[] content) {
+	public VContainerCanvas(RenderCanvas[] content) {
 		this.content = content;
 		calculateRequiredSizes();
 		setPositions();
@@ -18,17 +19,17 @@ public class HContainerCanvas extends RenderCanvas {
 		double w = 0d;
 		double h = 0d;
 		for (int i = 0; i < content.length; i++) {
-			w += content[i].requiredSize.getWidth();
-			if (content[i].requiredSize.getHeight() > h) h = content[i].requiredSize.getHeight();
+			h += content[i].requiredSize.getHeight();
+			if (content[i].requiredSize.getWidth() > w) w = content[i].requiredSize.getWidth();
 		}		
 		requiredSize = new Rectangle2D.Double(0, 0, w, h);
 	}
 
 	private void setPositions() {
-		int xpos = 0;
+		int ypos = 0;
 		for (int i = 0; i < content.length; i++) {
-			content[i].setPosition(xpos, 0);
-			xpos += content[i].requiredSize.getWidth();
+			content[i].setPosition(0, ypos);
+			ypos += content[i].requiredSize.getHeight();
 		}
 	}
 

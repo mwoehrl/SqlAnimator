@@ -29,11 +29,6 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 		requiredSize = new Rectangle2D.Double(0, 0, requiredSize.getWidth()+ 2*hPadding, requiredSize.getHeight()+ 2*vPadding);
 	}
 
-	@Override
-	public void setPosition(double x, double y) {
-		position = new Rectangle2D.Double(x, y, 0d, 0d);
-	}
-
 	public void adjustWidth(double maxWidth) {
 		requiredSize = new Rectangle2D.Double(0, 0, maxWidth, requiredSize.getHeight());
 	}

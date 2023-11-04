@@ -69,11 +69,6 @@ public class RelationCanvas extends RenderCanvas {
 		requiredSize = new Rectangle2D.Double(0, 0, requiredWidth, requiredHeight + tableNameCanvas.requiredSize.getHeight());		
 	}
 
-	@Override
-	public void setPosition(double x, double y) {
-		position = new Rectangle2D.Double(x, y, 0, 0);
-	}
-	
 	private void setPositions() {
 		int colX = 0;
 		tableNameCanvas.setPosition((requiredSize.getWidth() - tableNameCanvas.requiredSize.getWidth())/2 , 0);
