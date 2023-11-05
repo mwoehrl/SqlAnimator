@@ -27,7 +27,13 @@ public class MainClass {
 		AllRelationCanvas.screenHeight = overallHeight;
 		
 		List<Relation> allRelations = readRelations();
-		Query query = new Query("vorname,name AS nachname,AVG(note),COUNT(note) AS anzahl", "Schueler,Noten", "schueler_nr=nr", "nachname,vorname", "anzahl<3", "vorname");
+		Query query = new Query(
+				"vorname,name AS nachname,AVG(note),COUNT(note) AS anzahl",
+				"Schueler,Noten",
+				"schueler_nr=nr",
+				"nachname,vorname",
+				"anzahl<3",
+				"vorname");
 
 		AllRelationCanvas arcEmpty = new AllRelationCanvas(new Relation[0], new Rectangle2D.Double(0d,0d,0d,0d));
 		QueryCanvas queryCanvas = new QueryCanvas(query, queryWidth, overallHeight);

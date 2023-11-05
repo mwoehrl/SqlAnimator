@@ -16,17 +16,19 @@ public class ExecutionStep {
 	private final AbstractAction[] actions;
 	private PerformActionException preparationException = null;
 	private int animationStep = 0;
+	private final int spotligtLine;
 	
-	private ExecutionStep(String name, AbstractAction[] actions) {
+	private ExecutionStep(String name, AbstractAction[] actions, int spotlightLine) {
 		this.name = name;
 		this.actions = actions;		
+		this.spotligtLine = spotlightLine;
 	}
 	
 	public static ExecutionStep[] createAllExecutionSteps(Query query, List<Relation> originalRelations, AllRelationCanvas firstCanvas, QueryCanvas queryCanvas) {
 		ArrayList<ExecutionStep> allSteps = new ArrayList<ExecutionStep>(); 
 		allSteps.add(createPickTablesStep(query, queryCanvas, originalRelations));			//Pick Tables
 		for (int i = 0; i < query.from.getFromTables().length - 1; i++) {					//Cartesian Products if necessary
-			allSteps.add(createCartesianProductStep(query, i));
+			allSteps.add(createCartesianProductStep(query,queryCanvas, i));
 		}
 		if (query.where != null) allSteps.add(createSelectionStep(query, queryCanvas));		//Selection if necessary
 		allSteps.add(createProjectionStep(query, queryCanvas));								//Projection
@@ -46,10 +48,10 @@ public class ExecutionStep {
 
 	private static ExecutionStep createPickTablesStep(Query query, QueryCanvas queryCanvas, List<Relation> originalRelations) {
 		AbstractAction[] action = new AbstractAction[] {new PickTablesAction(query, originalRelations, queryCanvas)};
-		return new ExecutionStep("Tabellen auswählen", action);
+		return new ExecutionStep("Tabellen auswählen", action, queryCanvas.getSpotlightOnFrom());
 	}
 
-	private static ExecutionStep createCartesianProductStep(Query query, int i) {
+	private static ExecutionStep createCartesianProductStep(Query query, QueryCanvas queryCanvas, int i) {
 		String leftTable = query.from.getFromTables()[i];		//TODO alle vorigen Tables
 		String rightTable = query.from.getFromTables()[i+1];
 		AbstractAction[] actions = new AbstractAction[] {
@@ -57,7 +59,7 @@ public class ExecutionStep {
 				new CartesianFillAction(query),
 				new CartesianMergeAction(query)
 				};
-		return new ExecutionStep("Kartesisches Produkt " + leftTable + "x" + rightTable, actions);
+		return new ExecutionStep("Kartesisches Produkt " + leftTable + "x" + rightTable, actions,queryCanvas.getSpotlightOnFrom());
 	}
 
 	private static ExecutionStep createSelectionStep(Query query, QueryCanvas queryCanvas) {
@@ -65,7 +67,7 @@ public class ExecutionStep {
 				new MarkSelectAction(query, queryCanvas, true),
 				new ExecuteSelectAction(query, true)
 				};
-		return new ExecutionStep("Selektion", actions);
+		return new ExecutionStep("Selektion", actions, queryCanvas.getSpotlightOnWhere());
 	}
 
 	private static ExecutionStep createProjectionStep(Query query, QueryCanvas queryCanvas) {
@@ -73,7 +75,7 @@ public class ExecutionStep {
 				new MarkProjectAction(query, queryCanvas),
 				new ExecuteProjectAction(query)
 				};
-		return new ExecutionStep("Projektion", actions);
+		return new ExecutionStep("Projektion", actions, queryCanvas.getSpotlightOnSelect());
 	}
 
 	private static ExecutionStep createGroupByStep(Query query, QueryCanvas queryCanvas) {
@@ -84,7 +86,7 @@ public class ExecutionStep {
 				new ExecuteAggregationAction(query, bucketList),
 				new FinishGroupByAction(query, bucketList)
 				};
-		return new ExecutionStep("Gruppierung", actions);
+		return new ExecutionStep("Gruppierung", actions, queryCanvas.getSpotlightOnGroupBy());
 	}
 	
 
@@ -93,12 +95,12 @@ public class ExecutionStep {
 				new MarkSelectAction(query, queryCanvas, false),
 				new ExecuteSelectAction(query, false)
 				};
-		return new ExecutionStep("Selektion nach Gruppierung", actions);
+		return new ExecutionStep("Selektion nach Gruppierung", actions, queryCanvas.getSpotlightOnHaving());
 	}
 
 	private static ExecutionStep createOrderByStep(Query query, QueryCanvas queryCanvas) {
 		AbstractAction[] action = new AbstractAction[] {new OrderByAction(query, queryCanvas)};
-		return new ExecutionStep("Sortierung", action);
+		return new ExecutionStep("Sortierung", action, queryCanvas.getSpotlightOnOrderBy());
 	}
 
 	
@@ -147,5 +149,9 @@ public class ExecutionStep {
 
 	public void resetAnimationProgress() {
 		animationStep = 0;
+	}
+	
+	public int getSpotlight() {
+		return spotligtLine;
 	}
 }

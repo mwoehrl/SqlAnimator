@@ -39,9 +39,9 @@ public abstract class AbstractAction {
 	public void doAnimation(CanvasPanel canvasPanel) {
 		RenderCanvas[] staticCanvases;
 		if (showARCinAnimation) {
-			staticCanvases = new RenderCanvas[] { canvasPanel.getQueryCanvas(), resultingCanvas };
+			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas(), resultingCanvas };
 		} else {
-			staticCanvases = new RenderCanvas[] { canvasPanel.getQueryCanvas() };
+			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas() };
 		}
 		
 		TransitionCanvas transCanvas = new TransitionCanvas(transitions, canvasPanel.getWidth(),
@@ -129,9 +129,9 @@ public abstract class AbstractAction {
 	public void gotoAnimationProgress(CanvasPanel canvasPanel, double progress) {
 		RenderCanvas[] staticCanvases;
 		if (showARCinAnimation) {
-			staticCanvases = new RenderCanvas[] { canvasPanel.getQueryCanvas(), resultingCanvas };
+			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas(), resultingCanvas };
 		} else {
-			staticCanvases = new RenderCanvas[] { canvasPanel.getQueryCanvas() };
+			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas() };
 		}
 		
 		TransitionCanvas transCanvas = new TransitionCanvas(transitions, canvasPanel.getWidth(),

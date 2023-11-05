@@ -32,28 +32,13 @@ public class ExecutionController {
 		}
 	}
 
-	public void goToStep(int stepIndex) {
-		// TODO: reset substeps!
-		if (animationThread == null || !animationThread.isAlive()) {
-			allExecutionSteps[stepIndex].gotoResult(canvasPanel);
-			currentStep = stepIndex;
-		}
-	}
-
-	public void goToNextStep() {
-		// TODO: reset substeps!
-		if (animationThread == null || !animationThread.isAlive()) {
-			if (currentStep < allExecutionSteps.length - 1)
-				allExecutionSteps[currentStep++].gotoResult(canvasPanel);
-		}
-	}
-
 	public void goToPrevStep() {
 		if (animationThread == null || !animationThread.isAlive()) {
 			if (currentStep > 0) {
 				if (currentStep == allExecutionSteps.length || allExecutionSteps[currentStep].isInStartPosition()) {
 					if (currentStep > 1) {
 						allExecutionSteps[(--currentStep) - 1].gotoResult(canvasPanel);
+						canvasPanel.getQueryCanvas().setSpotlight(allExecutionSteps[currentStep].getSpotlight());
 					} else {
 						gotoStart();
 					}
@@ -88,10 +73,14 @@ public class ExecutionController {
 
 	private void playToNextSubAction() {
 		if (currentStep < allExecutionSteps.length) {
+			canvasPanel.getQueryCanvas().setSpotlight(allExecutionSteps[currentStep].getSpotlight());
 			allExecutionSteps[currentStep].doNextAnimationStep(canvasPanel);
 			if (allExecutionSteps[currentStep].isFinishedAnimating()) {
 				allExecutionSteps[currentStep].resetAnimationProgress();
 				currentStep++;
+				if (currentStep == allExecutionSteps.length) {
+					canvasPanel.getQueryCanvas().setSpotlight(-1);
+				}
 			}
 		}
 	}
@@ -105,5 +94,6 @@ public class ExecutionController {
 	private void internalGotoStart() {
 		currentStep = 0;
 		canvasPanel.setRenderCanvas(new AllRelationCanvas(new Relation[0], new Rectangle2D.Double(0, 0, 0, 0)));
+		canvasPanel.getQueryCanvas().setSpotlight(-1);
 	}
 }

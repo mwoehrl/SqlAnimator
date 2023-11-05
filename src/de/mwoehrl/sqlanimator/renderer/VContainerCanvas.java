@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 public class VContainerCanvas extends RenderCanvas {
 
-	private final RenderCanvas[] content;
+	protected final RenderCanvas[] content;
 
 	public VContainerCanvas(RenderCanvas[] content) {
 		this.content = content;

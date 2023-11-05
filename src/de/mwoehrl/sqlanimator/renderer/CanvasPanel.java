@@ -37,7 +37,11 @@ public class CanvasPanel extends JPanel {
 		g.drawImage(hContainer.drawImage(), 0, 0, null);
 	}
 
-	public RenderCanvas getQueryCanvas() {
+	public RenderCanvas getLeftSideCanvas() {
 		return queryAndRelations[0];
+	}
+	
+	public QueryCanvas getQueryCanvas() {
+		return (QueryCanvas)((VContainerCanvas)queryAndRelations[0]).content[0];
 	}	
 }

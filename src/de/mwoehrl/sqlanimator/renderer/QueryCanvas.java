@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -31,14 +32,21 @@ public class QueryCanvas extends RenderCanvas {
 	private BufferedImage tick;
 	private BufferedImage cross;
 	private final Query query;
-	private int havingLine;
-
+	private int spotlightLine;
+	private static final int selectLine = 0;
+	private static final int fromLine = 1;
+	private final int whereLine;
+	private final int groupbyLine;
+	private final int havingLine;
+	private final int orderbyline;	
+	
 	public QueryCanvas(Query query, int targetWidth, int targetHeight) {
 		this.targetWidth = targetWidth;
 		this.targetHeight = targetHeight;
 		this.textCells = new TextCanvas[2 + (query.where==null ? 0 : 1) + (query.orderby==null ? 0 : 1) + (query.groupby==null ? 0 : 1) + (query.having==null ? 0 : 1)][];
 		this.query = query;
-
+		this.spotlightLine = -1;
+		
 		try {
 			tick = javax.imageio.ImageIO.read(new File("tick.png"));
 			cross = javax.imageio.ImageIO.read(new File("cross.png"));
@@ -73,21 +81,27 @@ public class QueryCanvas extends RenderCanvas {
 
 		int queryRow = 2;
 		if (query.where != null) {
+			whereLine = 2;
 			textCells[queryRow] = new TextCanvas[2];
 			textCells[queryRow][0] = new TextCanvas("WHERE ", null, "Courier New", Font.BOLD, keywordColor);
 			for (int i = 0; i < 1; i++) {
 				textCells[queryRow][i + 1] = new TextCanvas(query.where.getConditionString(), null);
 			}
 			queryRow++;
+		} else {
+			whereLine = -1;
 		}
 
 		if (query.groupby != null) {
+			groupbyLine = queryRow;
 			textCells[queryRow] = new TextCanvas[2];
 			textCells[queryRow][0] = new TextCanvas("GROUP BY ", null, "Courier New", Font.BOLD, keywordColor);
 			for (int i = 0; i < 1; i++) {
 				textCells[queryRow][i + 1] = new TextCanvas(query.groupby, null, "Verdana", 0, Color.black);
 			}
 			queryRow++;
+		} else {
+			groupbyLine = -1;
 		}
 		
 		if (query.having != null) {
@@ -98,14 +112,19 @@ public class QueryCanvas extends RenderCanvas {
 			}
 			havingLine = queryRow;
 			queryRow++;
+		} else {
+			havingLine = -1;
 		}
 		
 		if (query.orderby != null) {
+			orderbyline = queryRow;
 			textCells[queryRow] = new TextCanvas[2];
 			textCells[queryRow][0] = new TextCanvas("ORDER BY ", null, "Courier New", Font.BOLD, keywordColor);
 			for (int i = 0; i < 1; i++) {
 				textCells[queryRow][i + 1] = new TextCanvas(String.join(",", query.orderby.getOrderByColumns()), null);
 			}
+		} else {
+			orderbyline = -1;
 		}
 		renderRelations();
 	}
@@ -187,6 +206,22 @@ public class QueryCanvas extends RenderCanvas {
 
 		g.setColor(COLOR_Background);
 		g.fill3DRect(0, 0, width, height, true);
+		if (spotlightLine != -1) {
+			Color darkColor = new Color(COLOR_Background.getRed()/2,COLOR_Background.getGreen()/2,COLOR_Background.getBlue()/2);
+			double h = textCells[spotlightLine][0].requiredSize.getHeight() / 2;
+			int y1 = (int)(textCells[spotlightLine][0].position.getY()+ TextCanvas.vPadding * scale);
+			int y2 = (int)(textCells[spotlightLine][textCells[spotlightLine].length-1].position.getY()+textCells[spotlightLine][textCells[spotlightLine].length-1].requiredSize.getHeight());
+
+			float hGrad = (float) (1.0f-(h/y1));
+			if (hGrad < 0f) hGrad = 0f;
+			g.setPaint(new LinearGradientPaint(0f,0f,0f,y1,new float[] {hGrad, 1.0f}, new Color[] {darkColor, COLOR_Background}));
+			g.fillRect(0, 0, width-1, y1);
+
+			hGrad = (float) (1.0f-(h/(height-y2-1)));
+			if (hGrad < 0f) hGrad = 0f;
+			g.setPaint(new LinearGradientPaint(0f,y2,0f,height-1,new float[] {0, 1.0f-hGrad}, new Color[] {COLOR_Background , darkColor}));
+			g.fillRect(0, y2, width-1, height-y2-1);
+		}
 
 		for (int i = 0; i < textCells.length; i++) {
 			for (int j = 0; j < textCells[i].length; j++) {
@@ -197,6 +232,34 @@ public class QueryCanvas extends RenderCanvas {
 		return img;
 	}
 
+	public int getSpotlightOnSelect() {
+		return selectLine;
+	}	
+
+	public int getSpotlightOnFrom() {
+		return fromLine;
+	}	
+
+	public int getSpotlightOnWhere() {
+		return whereLine;
+	}	
+
+	public int getSpotlightOnGroupBy() {
+		return groupbyLine;
+	}
+	
+	public int getSpotlightOnHaving() {
+		return havingLine;
+	}
+	
+	public int getSpotlightOnOrderBy() {
+		return orderbyline;
+	}
+	
+	public void setSpotlight(int s) {
+		spotlightLine = s;
+	}
+	
 	@Override
 	public void scaleUp(double factor) {
 	}
