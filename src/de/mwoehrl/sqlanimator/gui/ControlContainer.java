@@ -38,4 +38,14 @@ public class ControlContainer extends Control {
 			x += elementWidth + spacing;
 		}
 	}
+
+	public void layoutVertically() {
+		int y = 0;
+		for (Control c : controls) {
+			c.xPos = 0;
+			c.yPos = y;
+			c.width = width;
+			y += c.height;
+		}
+	}
 }

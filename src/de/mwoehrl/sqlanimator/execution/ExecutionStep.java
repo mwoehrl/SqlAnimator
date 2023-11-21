@@ -59,7 +59,7 @@ public class ExecutionStep {
 				new CartesianFillAction(query),
 				new CartesianMergeAction(query)
 				};
-		return new ExecutionStep("Kartesisches Produkt " + leftTable + "x" + rightTable, actions,queryCanvas.getSpotlightOnFrom());
+		return new ExecutionStep("Kartesisches Produkt " + leftTable + " x " + rightTable, actions,queryCanvas.getSpotlightOnFrom());
 	}
 
 	private static ExecutionStep createSelectionStep(Query query, QueryCanvas queryCanvas) {
@@ -120,7 +120,6 @@ public class ExecutionStep {
 			actions[animationStep].doAnimation(canvasPanel);
 		}		
 	}
-
 	
 	public void doNextAnimationStep(CanvasPanel canvasPanel) {
 		if (animationStep < actions.length) {
@@ -128,7 +127,6 @@ public class ExecutionStep {
 			animationStep++;
 		}		
 	}
-
 	
 	public void gotoResult(CanvasPanel canvasPanel) {
 		actions[actions.length-1].gotoResult(canvasPanel);
@@ -154,4 +152,25 @@ public class ExecutionStep {
 	public int getSpotlight() {
 		return spotligtLine;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int[] getFrameCounts() {
+		int[] result = new int[actions.length];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = actions[i].getFrameCount();
+		}
+		return result;
+	}
+
+	public int getCurrentAction() {
+		return animationStep;
+	}
+	
+	public int getCurrentActionFrame() {
+		return actions[animationStep].getCurrentActionFrame();
+	}
+	
 }

@@ -13,6 +13,7 @@ import de.mwoehrl.sqlanimator.gui.ButtonActionListener;
 import de.mwoehrl.sqlanimator.gui.ButtonControl;
 import de.mwoehrl.sqlanimator.gui.Control;
 import de.mwoehrl.sqlanimator.gui.ControlContainer;
+import de.mwoehrl.sqlanimator.gui.ProgressIndicator;
 
 public class ControlPanelCanvas extends RenderCanvas {
 
@@ -20,6 +21,7 @@ public class ControlPanelCanvas extends RenderCanvas {
 	private final int targetWidth;
 	private final int targetHeight;
 	private ExecutionController controller;
+	private ProgressIndicator progress;
 	
 	public ControlPanelCanvas(int targetWidth, int targetHeight) {
 		ButtonControl[] buttons = new ButtonControl[0];
@@ -66,15 +68,23 @@ public class ControlPanelCanvas extends RenderCanvas {
 		int padding = 10;
 		int spacing = 2*padding;
 		this.targetWidth = targetWidth;
-		this.targetHeight = padding + padding + ((targetWidth - padding - padding) - (spacing * (buttons.length - 1))) / buttons.length;;
-		control = new ControlContainer(buttons);
-		control.setSize(targetWidth, this.targetHeight);
-		control.layoutHorizontally(padding, spacing);
+		this.targetHeight = targetHeight; //;
+		ControlContainer buttonContainer = new ControlContainer(buttons);
+		int buttonContainerHeight = padding + padding + ((targetWidth - padding - padding) - (spacing * (buttons.length - 1))) / buttons.length;
+		buttonContainer.setSize(targetWidth, buttonContainerHeight);
+		buttonContainer.layoutHorizontally(padding, spacing);
+		progress = new ProgressIndicator();
+		progress.setSize(targetWidth, targetHeight-buttonContainerHeight);
+		Control[] topLevelControls = new Control[] {buttonContainer, progress};
+		control = new ControlContainer(topLevelControls);
+		control.setSize(targetWidth, targetHeight);
+		control.layoutVertically();
 		requiredSize = new Rectangle2D.Double(0,0,targetWidth,this.targetHeight);
 	}
 	
 	public void setController(ExecutionController controller) {
 		this.controller = controller;
+		this.progress.setController(controller);
 	}
 	
 	private void playButtonPressed() {
@@ -98,8 +108,9 @@ public class ControlPanelCanvas extends RenderCanvas {
 		Image img = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) img.getGraphics();
 
-		RenderingHints rh = new RenderingHints(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		rh.add(new RenderingHints(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC));
 		g.setRenderingHints(rh);
 
 		control.drawControl(g);

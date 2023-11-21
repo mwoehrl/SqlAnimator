@@ -60,6 +60,7 @@ public abstract class AbstractAction {
 		canvasPanel.repaint();
 
 		if (showResultAfterAnimation ) canvasPanel.setRenderCanvas(resultingCanvas);
+		animationStep = 0;
 	}
 	
 	protected CellTransition[] matchTransitions(AbsoluteCellPosition[] src, AbsoluteCellPosition[] dest) {
@@ -139,5 +140,13 @@ public abstract class AbstractAction {
 		canvasPanel.setTransitionCanvas(transCanvas);
 
 		transCanvas.setProgress(progress);
+	}
+
+	public int getFrameCount() {
+		return animationFrameCount;
+	}
+
+	public int getCurrentActionFrame() {
+		return animationStep;
 	}
 }

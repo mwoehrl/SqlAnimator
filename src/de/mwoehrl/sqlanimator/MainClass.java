@@ -30,14 +30,14 @@ public class MainClass {
 		Query query = new Query(
 				"vorname,name AS nachname,AVG(note),COUNT(note) AS anzahl",
 				"Schueler,Noten",
-				"schueler_nr=nr",
+				"schueler_nr = nr",
 				"nachname,vorname",
-				"anzahl<3",
+				"anzahl < 3",
 				"vorname");
 
 		AllRelationCanvas arcEmpty = new AllRelationCanvas(new Relation[0], new Rectangle2D.Double(0d,0d,0d,0d));
 		QueryCanvas queryCanvas = new QueryCanvas(query, queryWidth, overallHeight);
-		ControlPanelCanvas controlPanel = new ControlPanelCanvas(queryWidth, queryWidth/2);
+		ControlPanelCanvas controlPanel = new ControlPanelCanvas(queryWidth, (int)(queryWidth*1.64));
 		CanvasPanel canvasPanel = new CanvasPanel(queryCanvas,controlPanel, arcEmpty);
 		ExecutionController controller = new ExecutionController(ExecutionStep.createAllExecutionSteps(query, allRelations, arcEmpty, queryCanvas), canvasPanel);
 		controlPanel.setController(controller);
