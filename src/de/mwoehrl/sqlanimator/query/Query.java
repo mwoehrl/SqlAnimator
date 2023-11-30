@@ -20,22 +20,22 @@ public class Query {
 	public Query(String selectFields, String fromTables, String whereCondition, String groupBy, String havingCondition, String orderBy) {
 		select = new SELECT(selectFields);
 		from = new FROM(fromTables);
-		if (whereCondition == null) {
-			where = null;
-		} else {
+		if (whereCondition != null && whereCondition.length() > 0) {
 			where = new WHERE(parseCondition(whereCondition), whereCondition);
+		} else {
+			where = null;
 		}
-		if (groupBy != null) {
+		if (groupBy != null && groupBy.length() > 0) {
 			groupby = new GROUPBY(groupBy);
 		} else {
 			groupby = null;
 		}
-		if (havingCondition == null) {
-			having = null;
-		} else {
+		if (havingCondition != null && havingCondition.length() > 0) {
 			having = new WHERE(parseCondition(havingCondition), havingCondition);
+		} else {
+			having = null;
 		}
-		if (orderBy != null) {
+		if (orderBy != null && orderBy.length() > 0) {
 			orderby = new ORDERBY(orderBy);
 		} else {
 			orderby = null;

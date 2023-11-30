@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import de.mwoehrl.sqlanimator.ExecutionController;
@@ -19,9 +18,8 @@ public class ProgressIndicator extends Control {
 	
 	public ProgressIndicator() {
 		try {
-			pointer = javax.imageio.ImageIO.read(new File("pointing.png"));
+			pointer = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/pointing.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -36,7 +34,6 @@ public class ProgressIndicator extends Control {
 				allFrameCount += a;
 			}
 		}
-
 	}
 
 	@Override
@@ -88,5 +85,4 @@ public class ProgressIndicator extends Control {
 	protected void doClickEvent(int x, int y) {
 
 	}
-
 }

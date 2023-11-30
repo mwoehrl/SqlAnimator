@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.mwoehrl.sqlanimator.execution.CellTransition;
 import de.mwoehrl.sqlanimator.query.Aggregate;
@@ -201,5 +202,9 @@ public class AllRelationCanvas extends RenderCanvas {
 	public void setAggregateValuesFromRelation(Relation aggregatedRelation) {
 		((AggregateRelationCanvas)(relationCanvases[0])).setAggregateValuesFromRelation(aggregatedRelation);
 	}
-	
+
+	public void highlightMatchedColumns(List<AbstractCellCanvas> matchingHeaders) {
+		relationCanvases[0].highlightMatchedColumns(matchingHeaders);
+	}
+
 }

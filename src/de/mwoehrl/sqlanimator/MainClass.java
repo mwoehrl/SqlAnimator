@@ -1,8 +1,11 @@
 package de.mwoehrl.sqlanimator;
 
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +30,7 @@ public class MainClass {
 		AllRelationCanvas.screenHeight = overallHeight;
 		
 		List<Relation> allRelations = readRelations();
-		Query query = new Query(
-				"vorname,name AS nachname,AVG(note),COUNT(note) AS anzahl",
-				"Schueler,Noten",
-				"schueler_nr = nr",
-				"nachname,vorname",
-				"anzahl < 3",
-				"vorname");
+		Query query = readQuery();
 
 		AllRelationCanvas arcEmpty = new AllRelationCanvas(new Relation[0], new Rectangle2D.Double(0d,0d,0d,0d));
 		QueryCanvas queryCanvas = new QueryCanvas(query, queryWidth, overallHeight);
@@ -49,27 +46,59 @@ public class MainClass {
 		frame.add(canvasPanel);
 
 	}
+
+	private static Query readQuery() {
+		List<String> lines = readLinesFromFileOrResource("query.txt");
+		
+		return new Query(
+				lines.get(0),
+				lines.get(1),
+				lines.get(2),
+				lines.get(3),
+				lines.get(4),
+				lines.get(5));
+	}
+
+	private static List<String> readLinesFromFileOrResource(String fileName){
+		try {
+			//Check file in execution dir
+			List<String> allLines = Files.readAllLines(new File(fileName).toPath());
+			return allLines;
+		} catch (IOException e) {
+			//Use included resource file as fallback
+			try (InputStream in = MainClass.class.getResourceAsStream("/" + fileName);
+				    BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+					ArrayList<String> allLines = new ArrayList<String>();
+					String s = reader.readLine();
+					while (s != null) {
+						allLines.add(s);
+						s = reader.readLine();
+					}			
+					return allLines;				
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		}
+		return null;
+	}
 	
 	private static List<Relation> readRelations() {
-		List<Relation> result = null;
-		try {
-			result = new ArrayList<Relation>();
-			List<String> allLines = Files.readAllLines(new File("data.txt").toPath());
-			
-			List<String> currentRelationLines = new ArrayList<String>();
-			for (String line:allLines){
-				if (line.equals("")) {
-					result.add(new Relation(currentRelationLines));
-					currentRelationLines = new ArrayList<String>();
-				} else {
-					currentRelationLines.add(line);
-				}
-			}
-			if (currentRelationLines.size() > 2) {
+		return linesToRelations(readLinesFromFileOrResource("data.txt"));
+	}
+
+	private static List<Relation> linesToRelations(List<String> allLines) {
+		List<Relation> result = new ArrayList<Relation>();
+		List<String> currentRelationLines = new ArrayList<String>();
+		for (String line:allLines){
+			if (line.equals("")) {
 				result.add(new Relation(currentRelationLines));
+				currentRelationLines = new ArrayList<String>();
+			} else {
+				currentRelationLines.add(line);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		}
+		if (currentRelationLines.size() > 2) {
+			result.add(new Relation(currentRelationLines));
 		}
 		return result;
 	}

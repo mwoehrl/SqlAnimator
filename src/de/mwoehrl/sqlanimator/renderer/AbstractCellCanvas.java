@@ -13,6 +13,7 @@ public abstract class AbstractCellCanvas extends RenderCanvas {
 	protected static final int vPadding = 5;
 	protected Font font;
 	protected final boolean isHeader;
+	protected boolean isHighlighted;
 	protected double scale = 1d;
 	protected boolean isEvenLine = false;
 

@@ -2,8 +2,6 @@ package de.mwoehrl.sqlanimator.renderer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.LinearGradientPaint;
@@ -15,6 +13,7 @@ import de.mwoehrl.sqlanimator.relation.Cell;
 
 public class CellCanvas extends AbstractCellCanvas{
 
+	private static final Color HighlightColor = new Color(255,255,216);
 	private static final Color COLOR_Header = new Color(160,170,225);
 	private static final Color COLOR_HeaderGradient = new Color(225,230,255);
 	private final Cell cell;
@@ -42,8 +41,9 @@ public class CellCanvas extends AbstractCellCanvas{
 		g.setRenderingHints(rh);
 		
 		g.setFont(font);
+		Color backColor = isHighlighted ? HighlightColor : this.backColor;
 		if (isHeader) {
-			g.setPaint(new LinearGradientPaint(0f,0f,0f,height,new float[] {0.1f, 1.0f}, new Color[] {COLOR_HeaderGradient , this.backColor}));
+			g.setPaint(new LinearGradientPaint(0f,0f,0f,height,new float[] {0.1f, 1.0f}, new Color[] {COLOR_HeaderGradient , backColor}));
 		} else {
 			g.setColor(getOddColor(backColor));
 		}

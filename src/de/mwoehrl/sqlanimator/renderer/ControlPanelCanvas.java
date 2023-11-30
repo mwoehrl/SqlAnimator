@@ -27,10 +27,10 @@ public class ControlPanelCanvas extends RenderCanvas {
 		ButtonControl[] buttons = new ButtonControl[0];
 		
 		try {
-			BufferedImage play = javax.imageio.ImageIO.read(new File("Button_Play.png"));
-			BufferedImage plus = javax.imageio.ImageIO.read(new File("Button_Plus.png"));
-			BufferedImage minus = javax.imageio.ImageIO.read(new File("Button_Minus.png"));
-			BufferedImage rewind = javax.imageio.ImageIO.read(new File("Button_Rewind.png"));
+			BufferedImage play = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/Button_Play.png"));
+			BufferedImage plus = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/Button_Plus.png"));
+			BufferedImage minus = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/Button_Minus.png"));
+			BufferedImage rewind = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/Button_Rewind.png"));
 			
 			buttons = new ButtonControl[4];
 			

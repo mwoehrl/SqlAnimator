@@ -1,0 +1,6 @@
+vorname,name AS nachname,AVG(note) AS schnitt,COUNT(note) AS anzahl
+Schueler,Noten
+nr = schueler_nr
+vorname,nachname
+anzahl < 3
+schnitt

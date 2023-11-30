@@ -56,6 +56,11 @@ public class ExecutionController {
 		int start = currentStep;
 		while (currentStep < start + 1 && start < allExecutionSteps.length) {
 			playToNextSubAction();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

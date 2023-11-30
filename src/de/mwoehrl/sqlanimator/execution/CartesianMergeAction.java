@@ -7,7 +7,7 @@ import de.mwoehrl.sqlanimator.renderer.AllRelationCanvas;
 public class CartesianMergeAction extends AbstractAction {
 
 	protected CartesianMergeAction(Query query) {
-		super(query);
+		super(query, defaultSteps/2);
 	}
 
 	@Override
@@ -23,5 +23,4 @@ public class CartesianMergeAction extends AbstractAction {
 		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), resultingCanvas.getAbsoluteCellPositions());
 		return resultingCanvas;
 	}
-
 }

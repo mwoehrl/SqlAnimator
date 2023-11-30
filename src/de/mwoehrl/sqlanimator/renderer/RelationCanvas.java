@@ -8,6 +8,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.mwoehrl.sqlanimator.relation.Relation;
 import de.mwoehrl.sqlanimator.relation.Row;
@@ -202,5 +203,18 @@ public class RelationCanvas extends RenderCanvas {
 					c); 
 		}
 		return result;
+	}
+
+
+	public void highlightMatchedColumns(List<AbstractCellCanvas> matchingHeaders) {
+		for (int c = 0; c < cells.length; c++) {
+			for (AbstractCellCanvas mh : matchingHeaders) {
+				if (cells[c][0].getCoreObject() == mh.getCoreObject()) {
+					for (int r = 0; r < cells[c].length; r++) {
+						cells[c][r].isHighlighted = true;
+					}
+				}
+			}
+		}		
 	}
 }

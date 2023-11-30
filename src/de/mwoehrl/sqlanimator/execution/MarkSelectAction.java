@@ -13,7 +13,7 @@ public class MarkSelectAction extends AbstractAction {
 	private final boolean isWhere;
 	
 	protected MarkSelectAction(Query query, QueryCanvas queryCanvas, boolean isWhere) {
-		super(query, defaultSteps, true);
+		super(query, defaultSteps);
 		this.queryCanvas = queryCanvas;
 		this.isWhere = isWhere;
 	}
@@ -30,6 +30,7 @@ public class MarkSelectAction extends AbstractAction {
 		transitions = new CellTransition[result.size()];
 		result.toArray(transitions);
 		resultingCanvas = prevARC;
+		showARCinAnimation = prevARC;
 		return prevARC;
 	}
 

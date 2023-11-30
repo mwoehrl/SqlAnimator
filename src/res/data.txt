@@ -1,8 +1,8 @@
 Schueler
 nr;name;vorname;klasse
-1;Scott;Abigayle;10c
-2;Meier;Tom;10c
-3;WÃ¶hrl;Maximilian;K12
+1;Schneider;Alice;10c
+2;Meier;Bob;10c
+3;Wöhrl;Maximilian;K13
 
 Noten
 id;schueler_nr;note;typ;fach
@@ -11,7 +11,7 @@ id;schueler_nr;note;typ;fach
 3;1;3;Kurzarbeit;Inf
 4;1;1;Unterrichtsbeitrag;Inf
 5;2;1;Kurzarbeit;Inf
-6;3;5.3;Kurzarbeit;Inf
+6;3;2.3;Kurzarbeit;Inf
 
 Buecher
 isbn;titel;zustand;schueler_id

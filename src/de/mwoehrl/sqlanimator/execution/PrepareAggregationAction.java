@@ -16,6 +16,15 @@ public class PrepareAggregationAction extends GroupByAction {
 
 	@Override
 	public AllRelationCanvas perform(AllRelationCanvas prevARC) throws PerformActionException {
+		if (bucketList.size()==0){
+			//falls keine Gruppierung vorher: triviale Bucketlist erstellen
+			Row[] rows = prevARC.getRelations()[0].getRows();
+			ArrayList<Row> rowList = new ArrayList<Row>();
+			for (int i = 0; i < rows.length; i++) {
+				rowList.add(rows[i]);
+			}
+			bucketList.add(rowList);
+		}
 		Aggregate[] aggregates = new Aggregate[query.select.getProjectionColumns().length];
 		for (int i = 0; i < aggregates.length; i++) {
 			aggregates[i] = query.select.getProjectionColumns()[i].aggregate;

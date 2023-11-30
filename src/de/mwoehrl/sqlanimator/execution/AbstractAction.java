@@ -16,30 +16,25 @@ public abstract class AbstractAction {
 	protected final Query query;
 	protected CellTransition[] transitions;
 	protected AllRelationCanvas resultingCanvas;
-	private final boolean showARCinAnimation;
+	protected AllRelationCanvas showARCinAnimation;
 	private int animationStep;
 	protected boolean showResultAfterAnimation = false;
 	
 	protected AbstractAction(Query query) {
-		this(query, defaultSteps, false);
+		this(query, defaultSteps);
 	}
 
 	public AbstractAction(Query query, int stepCount) {
-		this(query, stepCount, false);
-	}
-
-	public AbstractAction(Query query, int stepCount, boolean showARCinAnimation) {
 		this.query = query;
 		this.animationFrameCount = stepCount;
-		this.showARCinAnimation = showARCinAnimation;
 	}
 
 	public abstract AllRelationCanvas perform(AllRelationCanvas prevARC) throws PerformActionException;
 
 	public void doAnimation(CanvasPanel canvasPanel) {
 		RenderCanvas[] staticCanvases;
-		if (showARCinAnimation) {
-			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas(), resultingCanvas };
+		if (showARCinAnimation != null) {
+			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas(), showARCinAnimation };
 		} else {
 			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas() };
 		}
@@ -122,15 +117,15 @@ public abstract class AbstractAction {
 		AllRelationCanvas newARC = new AllRelationCanvas(relations, arc.getPosition());
 		return newARC;
 	}
-
+	
 	public void gotoResult(CanvasPanel canvasPanel) {
 		canvasPanel.setRenderCanvas(resultingCanvas);
 	}
 
 	public void gotoAnimationProgress(CanvasPanel canvasPanel, double progress) {
 		RenderCanvas[] staticCanvases;
-		if (showARCinAnimation) {
-			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas(), resultingCanvas };
+		if (showARCinAnimation != null) {
+			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas(), showARCinAnimation };
 		} else {
 			staticCanvases = new RenderCanvas[] { canvasPanel.getLeftSideCanvas() };
 		}

@@ -9,19 +9,21 @@ import de.mwoehrl.sqlanimator.renderer.AbstractCellCanvas;
 import de.mwoehrl.sqlanimator.renderer.AllRelationCanvas;
 import de.mwoehrl.sqlanimator.renderer.QueryCanvas;
 
-public class MarkProjectAction extends AbstractAction {
+public class MarkSelectFieldsAction extends AbstractAction {
 
 	private final QueryCanvas queryCanvas;
+	private final boolean isWhere;
 
-	public MarkProjectAction(Query query, QueryCanvas queryCanvas) {
+	protected MarkSelectFieldsAction(Query query, QueryCanvas queryCanvas, boolean isWhere) {
 		super(query, defaultSteps);
 		this.queryCanvas = queryCanvas;
+		this.isWhere = isWhere;
 		showResultAfterAnimation = true;
 	}
 
 	@Override
 	public AllRelationCanvas perform(AllRelationCanvas prevARC) throws PerformActionException {
-		AbsoluteCellPosition[] queryCells = queryCanvas.getColumnCellAbsolutePositions();
+		AbsoluteCellPosition[] queryCells = queryCanvas.getSelectionCellAbsolutePositions(isWhere);
 		AbsoluteCellPosition[] tableCells = prevARC.getHeaderCellPositions();
 
 		ArrayList<CellTransition> result = new ArrayList<>();

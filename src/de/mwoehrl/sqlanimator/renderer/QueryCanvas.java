@@ -10,9 +10,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import de.mwoehrl.sqlanimator.MainClass;
 import de.mwoehrl.sqlanimator.query.ProjectionColumn;
 import de.mwoehrl.sqlanimator.query.Query;
 import de.mwoehrl.sqlanimator.query.expression.ExpressionToken;
@@ -48,23 +50,23 @@ public class QueryCanvas extends RenderCanvas {
 		this.spotlightLine = -1;
 		
 		try {
-			tick = javax.imageio.ImageIO.read(new File("tick.png"));
-			cross = javax.imageio.ImageIO.read(new File("cross.png"));
+			tick = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/tick.png"));
+			cross = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/cross.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		ArrayList<ExpressionToken> allTokens = new ArrayList<ExpressionToken>();
+		ArrayList<ExpressionToken> allSelectTokens = new ArrayList<ExpressionToken>();
 		for (ProjectionColumn pc : query.select.getProjectionColumns()) {
-			allTokens.addAll(Arrays.asList(pc.getAllTokens()));
-			allTokens.add(new ExpressionToken(TokenType.Other, ", "));
+			allSelectTokens.addAll(Arrays.asList(pc.getAllTokens()));
+			allSelectTokens.add(new ExpressionToken(TokenType.Other, ", "));
 		}
 
-		textCells[0] = new TextCanvas[allTokens.size()];
+		textCells[0] = new TextCanvas[allSelectTokens.size()];
 		textCells[0][0] = new TextCanvas("SELECT ", null, "Courier New", Font.BOLD, keywordColor);
 
-		for (int i = 1; i < allTokens.size(); i++) {
-			ExpressionToken tok = allTokens.get(i - 1);
+		for (int i = 1; i < allSelectTokens.size(); i++) {
+			ExpressionToken tok = allSelectTokens.get(i - 1);
 			textCells[0][i] = new TextCanvas(tok.text, null, tok.type == TokenType.Keyword ? "Courier New" : "Verdana",
 					tok.type == TokenType.Keyword ? Font.BOLD : 0,
 					tok.type == TokenType.Keyword ? keywordColor : Color.BLACK, tok.type == TokenType.Keyword ? 4 : 0);
@@ -82,10 +84,12 @@ public class QueryCanvas extends RenderCanvas {
 		int queryRow = 2;
 		if (query.where != null) {
 			whereLine = 2;
-			textCells[queryRow] = new TextCanvas[2];
+			ExpressionToken[] allWhereTokens = query.where.getWhereCondition().getAllTokens();
+			textCells[queryRow] = new TextCanvas[1 + allWhereTokens.length];
 			textCells[queryRow][0] = new TextCanvas("WHERE ", null, "Courier New", Font.BOLD, keywordColor);
-			for (int i = 0; i < 1; i++) {
-				textCells[queryRow][i + 1] = new TextCanvas(query.where.getConditionString(), null);
+			for (int i = 0; i < allWhereTokens.length; i++) {
+				boolean isColumn = allWhereTokens[i].type==TokenType.Column;
+				textCells[queryRow][i + 1] = new TextCanvas(allWhereTokens[i].text, null, "Verdana", isColumn ? 0 : Font.ITALIC, Color.BLACK);
 			}
 			queryRow++;
 		} else {
@@ -105,10 +109,12 @@ public class QueryCanvas extends RenderCanvas {
 		}
 		
 		if (query.having != null) {
-			textCells[queryRow] = new TextCanvas[2];
-			textCells[queryRow][0] = new TextCanvas("HAVING ", null, "Courier New", Font.BOLD, keywordColor);
-			for (int i = 0; i < 1; i++) {
-				textCells[queryRow][i + 1] = new TextCanvas(query.having.getConditionString(), null);
+			ExpressionToken[] allWhereTokens = query.having.getWhereCondition().getAllTokens();
+			textCells[queryRow] = new TextCanvas[1 + allWhereTokens.length];
+			textCells[queryRow][0] = new TextCanvas("WHERE ", null, "Courier New", Font.BOLD, keywordColor);
+			for (int i = 0; i < allWhereTokens.length; i++) {
+				boolean isColumn = allWhereTokens[i].type==TokenType.Column;
+				textCells[queryRow][i + 1] = new TextCanvas(allWhereTokens[i].text, null, "Verdana", isColumn ? 0 : Font.ITALIC, Color.BLACK);
 			}
 			havingLine = queryRow;
 			queryRow++;
@@ -277,6 +283,14 @@ public class QueryCanvas extends RenderCanvas {
 		return getAbsolutePositions(0);
 	}
 
+	public AbsoluteCellPosition[] getSelectionCellAbsolutePositions(boolean isWhere) {
+		if (isWhere) {
+			return getAbsolutePositions(whereLine);
+		} else {
+			return getAbsolutePositions(havingLine);
+		}
+	}
+	
 	private AbsoluteCellPosition[] getAbsolutePositions(int n) {
 		AbsoluteCellPosition[] result = new AbsoluteCellPosition[textCells[n].length - 1];
 		for (int i = 1; i < textCells[n].length; i++) {
@@ -306,4 +320,5 @@ public class QueryCanvas extends RenderCanvas {
 		}
 		return result;
 	}
+
 }

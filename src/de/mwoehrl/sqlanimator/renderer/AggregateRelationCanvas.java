@@ -54,6 +54,14 @@ public class AggregateRelationCanvas extends RelationCanvas {
 					ce.position = new Rectangle2D.Double(ce.position.getX() + dx, ce.position.getY() + dy, 0, 0);
 					ce.scaleUp(scaleFactor);
 				}
+				int r = 1;
+				for (int b = 0; b < bucketList.size(); b++) {
+					AbstractCellCanvas endCell = cells[c][r + bucketList.get(b).size()-1];
+					double h = endCell.position.getY() + endCell.requiredSize.getHeight() - cells[c][r].position.getY();
+					r += bucketList.get(b).size();
+					if (h > fallingDepth) fallingDepth = h;
+					if (bucketList.get(b).size() >  maxArgCount) maxArgCount = bucketList.get(b).size(); 
+				}
 			} else {
 				int r = 1;
 				for (int b = 0; b < bucketList.size(); b++) {
