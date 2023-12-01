@@ -1,5 +1,7 @@
 package de.mwoehrl.sqlanimator;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +25,10 @@ import de.mwoehrl.sqlanimator.renderer.QueryCanvas;
 public class MainClass {
 	
 	public static void main(String[] args) throws Exception {
-		int overallWidth = 1920;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double screenwidth = screenSize.getWidth();
+
+		int overallWidth = screenwidth < 1920 ? (int)screenwidth : 1920;
 		int overallHeight = overallWidth * 9 / 16;
 		int queryWidth = overallWidth / 4;
 		AllRelationCanvas.screenWidth = overallWidth - queryWidth;

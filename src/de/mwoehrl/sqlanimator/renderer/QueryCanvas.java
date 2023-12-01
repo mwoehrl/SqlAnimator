@@ -111,7 +111,7 @@ public class QueryCanvas extends RenderCanvas {
 		if (query.having != null) {
 			ExpressionToken[] allWhereTokens = query.having.getWhereCondition().getAllTokens();
 			textCells[queryRow] = new TextCanvas[1 + allWhereTokens.length];
-			textCells[queryRow][0] = new TextCanvas("WHERE ", null, "Courier New", Font.BOLD, keywordColor);
+			textCells[queryRow][0] = new TextCanvas("HAVING ", null, "Courier New", Font.BOLD, keywordColor);
 			for (int i = 0; i < allWhereTokens.length; i++) {
 				boolean isColumn = allWhereTokens[i].type==TokenType.Column;
 				textCells[queryRow][i + 1] = new TextCanvas(allWhereTokens[i].text, null, "Verdana", isColumn ? 0 : Font.ITALIC, Color.BLACK);
