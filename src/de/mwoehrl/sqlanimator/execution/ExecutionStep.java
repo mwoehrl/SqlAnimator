@@ -120,14 +120,14 @@ public class ExecutionStep {
 	}
 
 	private static ExecutionStep createOrderByStep(Query query, QueryCanvas queryCanvas) {
-		AbstractAction[] action = new AbstractAction[] {new OrderByAction(query, queryCanvas)};
+		AbstractAction[] action = new AbstractAction[] {new OrderByAction(query)};
 		return new ExecutionStep("Sortierung", action, queryCanvas.getSpotlightOnOrderBy());
 	}
 
 	
 	private AllRelationCanvas prepare(AllRelationCanvas arcPrev) {
 		try {
-			for (AbstractAction a : actions) {
+			for (AbstractAction a : getActions()) {
 				arcPrev = a.perform(arcPrev);
 			}
 		} catch (Exception e) {
@@ -137,29 +137,29 @@ public class ExecutionStep {
 	}
 	
 	public void doAnimation(CanvasPanel canvasPanel) {
-		for (animationStep = 0; animationStep < actions.length; animationStep++) {
-			actions[animationStep].doAnimation(canvasPanel);
+		for (animationStep = 0; animationStep < getActions().length; animationStep++) {
+			getActions()[animationStep].doAnimation(canvasPanel);
 		}		
 	}
 	
 	public void doNextAnimationStep(CanvasPanel canvasPanel) {
-		if (animationStep < actions.length) {
-			actions[animationStep].doAnimation(canvasPanel);
+		if (animationStep < getActions().length) {
+			getActions()[animationStep].doAnimation(canvasPanel);
 			animationStep++;
 		}		
 	}
 	
 	public void gotoResult(CanvasPanel canvasPanel) {
-		actions[actions.length-1].gotoResult(canvasPanel);
+		getActions()[getActions().length-1].gotoResult(canvasPanel);
 	}
 
 	public void gotoAnimationProgress(CanvasPanel canvasPanel, double progress) {
-		int actionIndex = (int)(progress / (1d / actions.length));
-		actions[actionIndex].gotoAnimationProgress(canvasPanel, (progress - (actionIndex * (1d / actions.length)))* actions.length);
+		int actionIndex = (int)(progress / (1d / getActions().length));
+		getActions()[actionIndex].gotoAnimationProgress(canvasPanel, (progress - (actionIndex * (1d / getActions().length)))* getActions().length);
 	}
 	
 	public boolean isFinishedAnimating() {
-		return animationStep == actions.length;
+		return animationStep == getActions().length;
 	}
 
 	public boolean isInStartPosition() {
@@ -179,9 +179,9 @@ public class ExecutionStep {
 	}
 
 	public int[] getFrameCounts() {
-		int[] result = new int[actions.length];
+		int[] result = new int[getActions().length];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = actions[i].getFrameCount();
+			result[i] = getActions()[i].getFrameCount();
 		}
 		return result;
 	}
@@ -191,7 +191,11 @@ public class ExecutionStep {
 	}
 	
 	public int getCurrentActionFrame() {
-		return actions[animationStep].getCurrentActionFrame();
+		return getActions()[animationStep].getCurrentActionFrame();
+	}
+
+	public AbstractAction[] getActions() {
+		return actions;
 	}
 	
 }

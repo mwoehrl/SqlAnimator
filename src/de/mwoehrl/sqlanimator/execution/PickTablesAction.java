@@ -24,8 +24,8 @@ public class PickTablesAction extends AbstractAction {
 	public AllRelationCanvas perform(AllRelationCanvas prevARC) throws PerformActionException {
 		Relation[] step1Relations = selectTables();
 		resultingCanvas = new AllRelationCanvas(step1Relations, prevARC.getPosition());
-		animateTableNames(resultingCanvas);
-		return resultingCanvas;
+		animateTableNames(getResultingCanvas());
+		return getResultingCanvas();
 	}
 	
 	private Relation[] selectTables() throws PerformActionException {
@@ -44,7 +44,7 @@ public class PickTablesAction extends AbstractAction {
 		return relationsResult;
 	}
 	
-	public void animateTableNames(AllRelationCanvas arc) {
+	private void animateTableNames(AllRelationCanvas arc) {
 		AbsoluteCellPosition[] queryCells = queryCanvas.getTableCellAbsolutePositions();
 		AbsoluteCellPosition[] tableCells = arc.getTableNameCellPosition();
 

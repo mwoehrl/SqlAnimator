@@ -31,4 +31,9 @@ public class AggregateCellTransition extends CellTransition {
 
 		g.drawImage(startPos.getCellCanvas().drawImage(), x, y, w, h, null);
 	}
+
+	@Override
+	public AbsoluteCellPosition[] getCellPositions() {
+		return new AbsoluteCellPosition[] {startPos};
+	}
 }

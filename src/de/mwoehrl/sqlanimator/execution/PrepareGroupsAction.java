@@ -21,10 +21,10 @@ public class PrepareGroupsAction extends GroupByAction {
 		Relation preGroupedRelation = prevARC.getRelations()[0].prepareGroupBy(query.groupby, bucketList);
 		
 		resultingCanvas = new AllRelationCanvas(preGroupedRelation, bucketList, prevARC.getPosition());
-		AbsoluteCellPosition[] toCellsDest = resultingCanvas.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] toCellsDest = getResultingCanvas().getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
-		return resultingCanvas;
+		return getResultingCanvas();
 	}
 
 }

@@ -120,6 +120,7 @@ public class AllRelationCanvas extends RenderCanvas {
 		for (RelationCanvas rc : relationCanvases) {
 			g.drawImage(rc.drawImage(), (int) rc.position.getX(), (int) rc.position.getY(), null);
 		}
+		g.dispose();
 		return img;
 	}
 

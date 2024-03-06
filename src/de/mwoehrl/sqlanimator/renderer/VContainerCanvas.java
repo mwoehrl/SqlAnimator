@@ -41,6 +41,7 @@ public class VContainerCanvas extends RenderCanvas {
 		for (int i = 0; i < content.length; i++) {
 			g.drawImage(content[i].drawImage(), (int)content[i].position.getX(), (int)content[i].position.getY(), null);
 		}
+		g.dispose();
 		return img;
 	}
 

@@ -15,10 +15,10 @@ public class ExecuteProjectAction extends AbstractAction {
 	public AllRelationCanvas perform(AllRelationCanvas prevARC) throws PerformActionException {
 		Relation projectedRelations = prevARC.getRelations()[0].projection(query.select);
 		resultingCanvas = new AllRelationCanvas(new Relation[] {projectedRelations}, prevARC.getPosition());
-		AbsoluteCellPosition[] toCellsDest = resultingCanvas.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] toCellsDest = getResultingCanvas().getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
-		resultingCanvas = cloneCells(resultingCanvas);
-		return resultingCanvas;
+		resultingCanvas = cloneCells(getResultingCanvas());
+		return getResultingCanvas();
 	}
 }

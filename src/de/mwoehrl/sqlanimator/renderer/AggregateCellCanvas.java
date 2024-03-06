@@ -69,6 +69,7 @@ public class AggregateCellCanvas extends AbstractCellCanvas {
 			String aggr = aggregate.doAggregation(lastN);
 			g.drawString(aggr, (int)(((width - requiredHeight.getWidth())/2d)), (int) ((height + requiredHeight.getHeight() -  5d * scale) / 2));
 		}
+		g.dispose();
 		return img;
 	}
 

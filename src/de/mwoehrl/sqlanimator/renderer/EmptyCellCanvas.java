@@ -20,6 +20,7 @@ public class EmptyCellCanvas extends AbstractCellCanvas{
 		Graphics2D g = (Graphics2D) img.getGraphics();
 		g.setColor(getOddColor(new Color(255,255,220)));
 		g.fillRect(0, 0, width, height);
+		g.dispose();
 		return img;
 	}
 

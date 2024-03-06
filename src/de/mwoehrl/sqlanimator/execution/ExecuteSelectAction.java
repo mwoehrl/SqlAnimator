@@ -17,11 +17,11 @@ public class ExecuteSelectAction extends AbstractAction {
 	public AllRelationCanvas perform(AllRelationCanvas prevARC) throws PerformActionException {
 		Relation selectedRelations = prevARC.getRelations()[0].selection(isWhere ? query.where : query.having);
 		resultingCanvas = new AllRelationCanvas(new Relation[] {selectedRelations}, prevARC.getPosition());
-		AbsoluteCellPosition[] toCellsDest = resultingCanvas.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] toCellsDest = getResultingCanvas().getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
-		resultingCanvas = cloneCells(resultingCanvas);
-		return resultingCanvas;
+		resultingCanvas = cloneCells(getResultingCanvas());
+		return getResultingCanvas();
 	}
 
 }

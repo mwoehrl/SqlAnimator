@@ -54,7 +54,7 @@ public abstract class AbstractAction {
 		transCanvas.setProgress(1d);
 		canvasPanel.repaint();
 
-		if (showResultAfterAnimation ) canvasPanel.setRenderCanvas(resultingCanvas);
+		if (showResultAfterAnimation ) canvasPanel.setRenderCanvas(getResultingCanvas());
 		animationStep = 0;
 	}
 	
@@ -119,7 +119,7 @@ public abstract class AbstractAction {
 	}
 	
 	public void gotoResult(CanvasPanel canvasPanel) {
-		canvasPanel.setRenderCanvas(resultingCanvas);
+		canvasPanel.setRenderCanvas(getResultingCanvas());
 	}
 
 	public void gotoAnimationProgress(CanvasPanel canvasPanel, double progress) {
@@ -143,5 +143,17 @@ public abstract class AbstractAction {
 
 	public int getCurrentActionFrame() {
 		return animationStep;
+	}
+
+	public AllRelationCanvas getResultingCanvas() {
+		return resultingCanvas;
+	}
+
+	public CellTransition[] getTransitions() {
+		return transitions;
+	}
+
+	public boolean showPrevCanvas() {
+		return showARCinAnimation != null;
 	}
 }

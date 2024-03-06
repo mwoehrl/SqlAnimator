@@ -20,7 +20,7 @@ public class CartesianMergeAction extends AbstractAction {
 			result[i] = relations[i+1];
 		}
 		resultingCanvas = new AllRelationCanvas(result, prevARC.getPosition());
-		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), resultingCanvas.getAbsoluteCellPositions());
-		return resultingCanvas;
+		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), getResultingCanvas().getAbsoluteCellPositions());
+		return getResultingCanvas();
 	}
 }

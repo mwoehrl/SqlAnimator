@@ -19,10 +19,10 @@ public class FinishGroupByAction extends GroupByAction {
 		Relation groupedRelation = prevARC.getRelations()[0].finishGroupBy(query.select, bucketList);
 		prevARC.setAggregateValuesFromRelation(groupedRelation);
 		resultingCanvas = new AllRelationCanvas(new Relation[] {groupedRelation}, prevARC.getPosition());
-		AbsoluteCellPosition[] toCellsDest = resultingCanvas.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] toCellsDest = getResultingCanvas().getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest, false);
-		return resultingCanvas;
+		return getResultingCanvas();
 	}
 
 }

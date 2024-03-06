@@ -19,8 +19,8 @@ public class CartesianPrepareAction extends AbstractAction {
 			relations[i] = prevARC.getRelations()[i];
 		}
 		resultingCanvas = new AllRelationCanvas(relations, prevARC.getPosition());
-		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), resultingCanvas.getAbsoluteCellPositions());
-		return resultingCanvas;
+		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), getResultingCanvas().getAbsoluteCellPositions());
+		return getResultingCanvas();
 	}
 
 }

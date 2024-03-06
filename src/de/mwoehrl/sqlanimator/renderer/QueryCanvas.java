@@ -43,6 +43,7 @@ public class QueryCanvas extends RenderCanvas {
 	private final int orderbyline;	
 	
 	public QueryCanvas(Query query, int targetWidth, int targetHeight) {
+		super.setPosition(0d, 0d);
 		this.targetWidth = targetWidth;
 		this.targetHeight = targetHeight;
 		this.textCells = new TextCanvas[2 + (query.where==null ? 0 : 1) + (query.orderby==null ? 0 : 1) + (query.groupby==null ? 0 : 1) + (query.having==null ? 0 : 1)][];
@@ -319,6 +320,10 @@ public class QueryCanvas extends RenderCanvas {
 					imageCanvas);
 		}
 		return result;
+	}
+
+	public int getWidth() {
+		return targetWidth;
 	}
 
 }

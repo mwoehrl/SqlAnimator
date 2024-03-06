@@ -30,10 +30,10 @@ public class PrepareAggregationAction extends GroupByAction {
 			aggregates[i] = query.select.getProjectionColumns()[i].aggregate;
 		}
 		resultingCanvas = new AllRelationCanvas(prevARC.getRelations()[0], aggregates, bucketList, prevARC.getPosition());
-		AbsoluteCellPosition[] toCellsDest = resultingCanvas.getAbsoluteCellPositions();
+		AbsoluteCellPosition[] toCellsDest = getResultingCanvas().getAbsoluteCellPositions();
 		AbsoluteCellPosition[] fromPositions = prevARC.getAbsoluteCellPositions();
 		transitions = matchTransitions(fromPositions, toCellsDest);
-		return resultingCanvas;
+		return getResultingCanvas();
 	}
 
 }

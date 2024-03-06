@@ -31,17 +31,20 @@ public class MainClass {
 		int overallWidth = screenwidth < 1920 ? (int)screenwidth : 1920;
 		int overallHeight = overallWidth * 9 / 16;
 		int queryWidth = overallWidth / 4;
-		AllRelationCanvas.screenWidth = overallWidth - queryWidth;
-		AllRelationCanvas.screenHeight = overallHeight;
 		
 		List<Relation> allRelations = readRelations();
 		Query query = readQuery();
 
+		AllRelationCanvas.screenWidth = overallWidth - queryWidth;
+		AllRelationCanvas.screenHeight = overallHeight;
 		AllRelationCanvas arcEmpty = new AllRelationCanvas(new Relation[0], new Rectangle2D.Double(0d,0d,0d,0d));
 		QueryCanvas queryCanvas = new QueryCanvas(query, queryWidth, overallHeight);
 		ControlPanelCanvas controlPanel = new ControlPanelCanvas(queryWidth, (int)(queryWidth*1.64));
-		CanvasPanel canvasPanel = new CanvasPanel(queryCanvas,controlPanel, arcEmpty);
-		ExecutionController controller = new ExecutionController(ExecutionStep.createAllExecutionSteps(query, allRelations, arcEmpty, queryCanvas), canvasPanel);
+		CanvasPanel canvasPanel = new CanvasPanel(queryCanvas, controlPanel, arcEmpty);
+
+		ExecutionStep[] allExecutionSteps = ExecutionStep.createAllExecutionSteps(query, allRelations, arcEmpty, queryCanvas);
+
+		ExecutionController controller = new ExecutionController(allExecutionSteps, canvasPanel);
 		controlPanel.setController(controller);
 
 		JFrame frame = new JFrame("Animation");
@@ -49,7 +52,17 @@ public class MainClass {
 		frame.setSize(overallWidth+16, overallHeight+40);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(canvasPanel);
+	}
+	
+	public static PreparedAnimation prepareAnimation(int overallWidth, int overallHeight, int queryWidth) {
+		List<Relation> allRelations = readRelations();
+		Query query = readQuery();
 
+		AllRelationCanvas.screenWidth = overallWidth - queryWidth;
+		AllRelationCanvas.screenHeight = overallHeight;
+		AllRelationCanvas arcEmpty = new AllRelationCanvas(new Relation[0], new Rectangle2D.Double(queryWidth,0d,0d,0d));
+		QueryCanvas queryCanvas = new QueryCanvas(query, queryWidth, overallHeight);
+		return new PreparedAnimation(ExecutionStep.createAllExecutionSteps(query, allRelations, arcEmpty, queryCanvas), queryCanvas);
 	}
 
 	private static Query readQuery() {

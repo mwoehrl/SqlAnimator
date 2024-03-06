@@ -122,7 +122,7 @@ public class RelationCanvas extends RenderCanvas {
 				g.drawImage(cell.drawImage(), (int)cell.position.getX(), (int)cell.position.getY(), null);				
 			}
 		}
-
+		g.dispose();
 		return img;
 	}
 

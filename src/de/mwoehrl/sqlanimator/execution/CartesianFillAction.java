@@ -17,9 +17,9 @@ public class CartesianFillAction extends AbstractAction {
 		relations[1].separateRows();
 		relations[1].multiplyRowsRowwise();
 		resultingCanvas = new AllRelationCanvas(relations, prevARC.getPosition());
-		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), resultingCanvas.getAbsoluteCellPositions());
-		resultingCanvas = cloneCells(resultingCanvas);
-		return resultingCanvas;
+		transitions = matchTransitions(prevARC.getAbsoluteCellPositions(), getResultingCanvas().getAbsoluteCellPositions());
+		resultingCanvas = cloneCells(getResultingCanvas());
+		return getResultingCanvas();
 	}
 
 }

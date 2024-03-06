@@ -41,9 +41,9 @@ public class MarkSelectFieldsAction extends AbstractAction {
 		transitions = new CellTransition[result.size()];
 		result.toArray(transitions);
 		resultingCanvas = new AllRelationCanvas(prevARC.getRelations(), prevARC.getPosition());
-		resultingCanvas.highlightMatchedColumns(matchingHeaders);
+		getResultingCanvas().highlightMatchedColumns(matchingHeaders);
 		showARCinAnimation = prevARC;
-		return resultingCanvas;		
+		return getResultingCanvas();		
 	}
 
 }

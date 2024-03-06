@@ -67,7 +67,7 @@ public class TextCanvas extends RenderCanvas {
 		}
 		g.setColor(fontColor);
 		g.drawString(text.toString(), padding, height - (int)(vPadding * scale));
-		
+		g.dispose();
 		return img;
 	}
 

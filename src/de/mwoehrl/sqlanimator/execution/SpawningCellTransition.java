@@ -27,5 +27,9 @@ public class SpawningCellTransition extends CellTransition {
 
 	}
 
+	@Override
+	public AbsoluteCellPosition[] getCellPositions() {
+		return new AbsoluteCellPosition[] { absoluteCellPosition };
+	}
 
 }

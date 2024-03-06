@@ -55,6 +55,7 @@ public class CellCanvas extends AbstractCellCanvas{
 		Rectangle2D requiredHeight = g.getFontMetrics().getStringBounds(cell.getValue(),g);
 
 		g.drawString(cell.getValue(), (float)(hPadding * scale), (float)((height + requiredHeight.getHeight() -  5d * scale) / 2));
+		g.dispose();
 		return img;
 	}
 

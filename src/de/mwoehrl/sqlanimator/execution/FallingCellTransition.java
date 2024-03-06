@@ -28,4 +28,9 @@ public class FallingCellTransition extends CellTransition {
 		}
 	}
 
+	@Override
+	public AbsoluteCellPosition[] getCellPositions() {
+		return new AbsoluteCellPosition[] {cell, bottom};
+	}
+
 }

@@ -16,7 +16,7 @@ public class ExecuteAggregationAction extends GroupByAction {
 	public AllRelationCanvas perform(AllRelationCanvas prevARC) throws PerformActionException {
 		transitions = prevARC.getAggregateTransistions();
 		resultingCanvas = prevARC;
-		return resultingCanvas;
+		return getResultingCanvas();
 	}
 
 }

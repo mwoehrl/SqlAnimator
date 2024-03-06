@@ -47,6 +47,7 @@ public class TransitionCanvas extends RenderCanvas {
 		for (CellTransition trans : transitions) {
 			trans.drawCellInTransition(g, progress);
 		}
+		g.dispose();
 		return img;
 	}
 
